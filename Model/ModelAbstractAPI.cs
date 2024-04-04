@@ -1,10 +1,6 @@
-﻿namespace Model
+﻿namespace Logic
 {
-    internal class Program
+    public abstract class ModelAbstractAPI
     {
-        static void Main(string[] args)
-        {
-            Console.WriteLine("Hello, World!");
-        }
     }
 }
