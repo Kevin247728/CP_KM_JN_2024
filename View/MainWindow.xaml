@@ -4,9 +4,26 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:View"
+		xmlns:vm="clr-namespace:ViewModel"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="700" Width="1200">
     <Grid>
-        
+		<StackPanel Margin="10">
+			<TextBlock Text="Enter the number of balls:" Margin="0 0 0 5"/>
+			<TextBox x:Name="txtNumberOfBalls" Margin="0 0 0 5"/>
+			<Button Content="Start" Click="Start_Click"/>
+			<ItemsControl ItemsSource="{Binding Balls}">
+				<ItemsControl.ItemsPanel>
+					<ItemsPanelTemplate>
+						<Canvas/>
+					</ItemsPanelTemplate>
+				</ItemsControl.ItemsPanel>
+				<ItemsControl.ItemTemplate>
+					<DataTemplate>
+						<Ellipse Fill="Blue" Width="{Binding Radius}" Height="{Binding Radius}" Canvas.Left="{Binding X}" Canvas.Top="{Binding Y}"/>
+					</DataTemplate>
+				</ItemsControl.ItemTemplate>
+			</ItemsControl>
+		</StackPanel>
     </Grid>
 </Window>

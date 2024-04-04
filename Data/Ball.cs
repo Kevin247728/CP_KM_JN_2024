@@ -35,6 +35,8 @@
 
             this.x = newX;
             this.y = newY;
+            OnPropertyChanged(nameof(X));
+            OnPropertyChanged(nameof(Y));
         }
 
         public double X
@@ -47,6 +49,7 @@
                     return;
                 }
                 x = value;
+                OnPropertyChanged();
             }
         }
         public double Y
@@ -59,6 +62,7 @@
                     return;
                 }
                 y = value;
+                OnPropertyChanged();
             }
         }
 
@@ -82,7 +86,17 @@
                     return;
                 }
                 angle = value;
+                OnPropertyChanged();
             }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged; //powiadamiamy o zmianie właściwości obiektu
+
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }
+
+
