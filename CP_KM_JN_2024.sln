@@ -11,7 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ViewModel", "ViewModel\View
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "View", "View\View.csproj", "{8A2B7994-1EDF-4160-A21E-BB038AE087E3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Model", "Model\Model.csproj", "{BE36EDD3-49EA-460C-A0CA-470B8DF8B0BA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Model", "Model\Model.csproj", "{BE36EDD3-49EA-460C-A0CA-470B8DF8B0BA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentation", "Presentation", "{5E8B1148-041C-4357-9ED7-36F9CCAC15C1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -42,6 +44,11 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{3D45759A-B11A-4A9A-A24A-A64FB9DBCB42} = {5E8B1148-041C-4357-9ED7-36F9CCAC15C1}
+		{8A2B7994-1EDF-4160-A21E-BB038AE087E3} = {5E8B1148-041C-4357-9ED7-36F9CCAC15C1}
+		{BE36EDD3-49EA-460C-A0CA-470B8DF8B0BA} = {5E8B1148-041C-4357-9ED7-36F9CCAC15C1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6FD6E672-0EC4-4502-A723-74B06EA6C22C}

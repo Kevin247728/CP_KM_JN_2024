@@ -1,7 +1,8 @@
 ﻿
 using Logic;
 using Model;
-using System.Collections.Generic;
+using Data;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
@@ -10,16 +11,20 @@ namespace ViewModel
     public class MainViewModel : INotifyPropertyChanged 
     {
         private readonly ModelAbstractAPI _ballService; 
-        private List<Ball> _balls; //przechowuje kolekcje kul.
+        private ObservableCollection<IBall> _balls; 
         private int _numberOfBallsToAdd; //przechowuje liczbe kul do dodania.
 
-        public List<Ball> Balls 
+        public ObservableCollection<IBall> Balls 
         {
-            get => _balls; //getter - zwraca wartość pola _balls.
-            set //setter - ustawia wartość pola _balls i wywołuje metodę OnPropertyChanged
+            get => _balls; 
+            set
             {
+                if (value.Equals(_balls))
+                {
+                    return;
+                }
                 _balls = value; 
-                OnPropertyChanged(); //informuje o zmianie właściwości.
+                OnPropertyChanged(); 
             }
         }
 

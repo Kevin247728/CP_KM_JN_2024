@@ -1,100 +1,62 @@
-﻿namespace Data
+﻿using System.Numerics;
+
+namespace Data
 {
-    public interface IBall : INotifyPropertyChanged
+    public interface IBall
     {
-        double X { get; set; }
-        double Y { get; set; }
         int R { get; }
         int ID { get; }
-        double ANGLE { get; set; }
+        Vector2 Position { get; set; }
+        Vector2 Velocity { get; set; }
 
         void MoveBall();
     }
 
     internal class Ball : IBall
     {
-        private double x;
-        private double y;
-        private double angle;
+        private Vector2 velocity;
+        private Vector2 position;
         private readonly int r;
         private readonly int id;
-           
-        public Ball(double x, double y, int r, int id, double angle)
+
+        public Ball(Vector2 position, Vector2 velocity, int r, int id)
         {
-            this.x = x;
-            this.y = y;
+            this.velocity = velocity;
+            this.position = position;
             this.r = r;
-            this.id = id;
-            this.angle = angle;
+            this.id = id;   
         }
 
         public void MoveBall()
         {
-            double newX = X + Math.Cos(angle * Math.PI / 180.0);
-            double newY = Y + Math.Sin(angle * Math.PI / 180.0);
-
-            this.x = newX;
-            this.y = newY;
-            OnPropertyChanged(nameof(X));
-            OnPropertyChanged(nameof(Y));
+            position += new Vector2((float)Math.Cos(Math.PI / 180.0), (float)Math.Sin(Math.PI / 180.0));
         }
 
-        public double X
+        public float X
         {
-            get => x;
-            set
-            {
-                if (value.Equals(x))
-                {
-                    return;
-                }
-                x = value;
-                OnPropertyChanged();
-            }
-        }
-        public double Y
-        {
-            get => y;
-            set
-            {
-                if (value.Equals(y))
-                {
-                    return;
-                }
-                y = value;
-                OnPropertyChanged();
-            }
+            get => position.X;
+            set => position.X = value;
         }
 
-        public int R
+        public float Y
         {
-            get => r;
+            get => position.Y;
+            set => position.Y = value;
+        }
+        public int R => r;
+
+        public int ID => id;
+
+        public Vector2 Position
+        {
+            get => position;
+            set => position = value;
         }
 
-        public int ID
+        public Vector2 Velocity
         {
-            get => id;
-        }
-
-        public double ANGLE
-        {
-            get => angle;
-            set
-            {
-                if (value.Equals(angle))
-                {
-                    return;
-                }
-                angle = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged; //powiadamiamy o zmianie właściwości obiektu
-
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            get => velocity;
+            set => velocity = value;
         }
     }
 }
