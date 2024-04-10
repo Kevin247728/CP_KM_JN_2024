@@ -1,18 +1,19 @@
 ﻿
 using Logic;
-using Model;
 using Data;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Windows.Input;
+using Intersoft.Crosslight;
 
 namespace ViewModel
 {
     public class MainViewModel : INotifyPropertyChanged 
     {
-        private readonly ModelAbstractAPI _ballService; 
-        private ObservableCollection<IBall> _balls; 
-        private int _numberOfBallsToAdd; //przechowuje liczbe kul do dodania.
+        private readonly ILogicAPI logicAPI;
+        private ObservableCollection<IBall> _balls;
+        private int _numberOfBallsToAdd;
 
         public ObservableCollection<IBall> Balls 
         {
@@ -38,15 +39,34 @@ namespace ViewModel
             }
         }
 
-        public MainViewModel(ModelAbstractAPI ballService) //konstruktor klasy
+        public ICommand StartCommand { get; }
+        public ICommand StopCommand { get; }
+
+        public MainViewModel(ILogicAPI logicAPI) 
         {
-            _ballService = ballService; 
-            _ballService.BallsUpdated += (sender, balls) => Balls = balls; 
+            this.logicAPI = logicAPI ?? throw new ArgumentNullException(nameof(logicAPI));
+            StartCommand = new RelayCommand(StartSimulation, CanStartSimulation);
+            StopCommand = new RelayCommand(StopSimulation, CanStopSimulation);
         }
 
-        public void StartSimulation() 
+        private bool CanStartSimulation(object parameter)
         {
-            _ballService.AddBalls(NumberOfBallsToAdd); //dodaje kulki do symulacji
+            return NumberOfBallsToAdd > 0;
+        }
+
+        private void StartSimulation(object parameter)
+        {
+            logicAPI.Start(NumberOfBallsToAdd);
+        }
+
+        private bool CanStopSimulation(object parameter)
+        {
+            return Balls?.Count > 0;
+        }
+
+        private void StopSimulation(object parameter)
+        {
+            Balls?.Clear();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -55,6 +75,33 @@ namespace ViewModel
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-
     }
+
+    public class RelayCommand : ICommand
+    {
+        private readonly Action<object> _execute;
+        private readonly Func<object, bool> _canExecute;
+        private event EventHandler _canExecuteChanged;
+
+        public RelayCommand(Action<object> execute, Func<object, bool> canExecute = null)
+        {
+            _execute = execute ?? throw new ArgumentNullException(nameof(execute));
+            _canExecute = canExecute;
+        }
+
+        public event EventHandler CanExecuteChanged
+        {
+            add { _canExecuteChanged += value; }
+            remove { _canExecuteChanged -= value; }
+        }
+
+        public bool CanExecute(object parameter) => _canExecute?.Invoke(parameter) ?? true;
+
+        public void Execute(object parameter) => _execute(parameter);
+
+        public void RaiseCanExecuteChanged() => _canExecuteChanged?.Invoke(this, EventArgs.Empty);
+    }
+
+
 }
+

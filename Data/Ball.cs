@@ -1,4 +1,6 @@
-﻿using System.Numerics;
+﻿using System;
+using System.Collections.Generic;
+using System.Numerics;
 
 namespace Data
 {
@@ -10,6 +12,15 @@ namespace Data
         Vector2 Velocity { get; set; }
 
         void MoveBall();
+    }
+
+    public interface IDataAPI
+    {
+        int GetBoardWidth();
+        int GetBoardHeight();
+        IBall CreateBall(Vector2 position, Vector2 velocity, int radius);
+        IBall GetBall(int index);
+        int GetBallsCount();
     }
 
     internal class Ball : IBall
