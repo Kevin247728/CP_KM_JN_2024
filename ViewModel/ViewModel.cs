@@ -12,7 +12,7 @@ namespace ViewModel
 {
     public class MainViewModel : INotifyPropertyChanged
     {
-        private readonly ModelAPI _model; // Zmiana typu referencji na ModelAPI
+        private readonly ModelAPI _model; 
         public int _numberOfBallsToAdd;
 
         public MainViewModel()

@@ -51,51 +51,65 @@ namespace Model
             ballAnimations = new List<Storyboard>();
         }
 
+        public void MoveBall(Ellipse ellipse, double deltaX, double deltaY)
+        {
+            double newX = Canvas.GetLeft(ellipse) + deltaX;
+            double newY = Canvas.GetTop(ellipse) + deltaY;
+
+            // Sprawdź, czy nowa pozycja znajduje się wewnątrz ramki
+            if (newX >= 0 && newY >= 0 && newX + ellipse.Width <= Canvas.Width && newY + ellipse.Height <= Canvas.Height)
+            {
+                Canvas.SetLeft(ellipse, newX);
+                Canvas.SetTop(ellipse, newY);
+            }
+        }
+
+
 
         public void StartBallAnimation()
         {
             foreach (var ellipse in ellipseCollection)
             {
-                DoubleAnimation animationX = new DoubleAnimation
+                double speedX = GetRandomSpeed(); 
+                double speedY = GetRandomSpeed(); 
+
+                CompositionTarget.Rendering += (sender, e) =>
                 {
-                    From = Canvas.GetLeft(ellipse),
-                    To = Canvas.GetLeft(ellipse) + 100, // Przykładowy ruch kul wzdłuż osi X o 100 jednostek
-                    Duration = TimeSpan.FromSeconds(1), // Przykładowy czas trwania animacji
-                    RepeatBehavior = RepeatBehavior.Forever, // Powtarzaj animację w nieskończoność
-                    AutoReverse = true // Automatyczne odwracanie animacji
+                    double newX = Canvas.GetLeft(ellipse) + speedX;
+                    double newY = Canvas.GetTop(ellipse) + speedY;
+
+                    // Sprawdź, czy kulka dotknęła krawędzi ramki i jeśli tak, odwróć jej kierunek
+                    if (newX >= Canvas.ActualWidth - ellipse.Width || newX <= 0)
+                    {
+                        speedX *= -1; // Odwróć kierunek w osi X
+                    }
+
+                    if (newY >= Canvas.ActualHeight - ellipse.Height || newY <= 0)
+                    {
+                        speedY *= -1; // Odwróć kierunek w osi Y
+                    }
+
+                    // Aktualizuj pozycję kulki
+                    Canvas.SetLeft(ellipse, newX);
+                    Canvas.SetTop(ellipse, newY);
                 };
-
-                DoubleAnimation animationY = new DoubleAnimation
-                {
-                    From = Canvas.GetTop(ellipse),
-                    To = Canvas.GetTop(ellipse) + 100, // Przykładowy ruch kul wzdłuż osi Y o 100 jednostek
-                    Duration = TimeSpan.FromSeconds(1), // Przykładowy czas trwania animacji
-                    RepeatBehavior = RepeatBehavior.Forever, // Powtarzaj animację w nieskończoność
-                    AutoReverse = true // Automatyczne odwracanie animacji
-                };
-
-                Storyboard.SetTarget(animationX, ellipse);
-                Storyboard.SetTargetProperty(animationX, new PropertyPath(Canvas.LeftProperty));
-                Storyboard.SetTarget(animationY, ellipse);
-                Storyboard.SetTargetProperty(animationY, new PropertyPath(Canvas.TopProperty));
-
-                Storyboard storyboard = new Storyboard();
-                storyboard.Children.Add(animationX);
-                storyboard.Children.Add(animationY);
-
-                ballAnimations.Add(storyboard);
-
-                storyboard.Begin();
             }
+        }
+
+        private double GetRandomSpeed()
+        {
+            Random random = new Random();
+            return random.NextDouble() * 5 + 1; // Losowa prędkość z zakresu 1-6
         }
 
         public void StopBallAnimation()
         {
             foreach (var storyboard in ballAnimations)
             {
-                storyboard.Stop();
+                storyboard.Pause();
             }
         }
+
 
         public override void CreateEllipses(int numberOfBalls)
         {
@@ -111,7 +125,6 @@ namespace Model
                     Fill = brush
                 };
 
-                // Obliczamy losowe pozycje elipsy w obrębie ramki
                 double x = random.Next(0, (int)Canvas.Width - 10);
                 double y = random.Next(0, (int)Canvas.Height - 10);
 
@@ -133,8 +146,6 @@ namespace Model
             }
         }
 
-
-        // Metoda sprawdzająca, czy nowa elipsa nie nakłada się na istniejące elipsy
         private bool CheckForOverlap(double x, double y)
         {
             foreach (var existingEllipse in ellipseCollection)
@@ -152,7 +163,4 @@ namespace Model
         }
 
     }
-
-
-
 }
