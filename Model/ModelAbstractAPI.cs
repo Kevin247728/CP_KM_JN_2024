@@ -29,6 +29,7 @@ namespace Model
         private readonly DataAbstractAPI dataAPI;
         public override List<Ellipse> ellipseCollection { get; }
         public override Canvas Canvas { get; set; }
+        private readonly Random random;
 
         public ModelAPI()
         {
@@ -36,21 +37,19 @@ namespace Model
             logicAPI = LogicAbstractAPI.CreateLogicAPI();
             Canvas = new Canvas();
             ellipseCollection = new List<Ellipse>();
-            Canvas.HorizontalAlignment = HorizontalAlignment.Left;
-            Canvas.VerticalAlignment = VerticalAlignment.Bottom;
+            Canvas.HorizontalAlignment = HorizontalAlignment.Stretch;
+            Canvas.VerticalAlignment = VerticalAlignment.Stretch;
+            Canvas.Width = 300;
+            Canvas.Height = 500;
+            random = new Random();
         }
 
-        //public override void StartSimulation(int nrOfBalls)
-        //{
-        //    logicAPI.Start(nrOfBalls);
-        //}
 
         public override void CreateEllipses(int numberOfBalls)
         {
-            Random random = new Random();
             logicAPI.Start(numberOfBalls);
 
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < numberOfBalls; i++)
             {
                 SolidColorBrush brush = new SolidColorBrush(Color.FromRgb((byte)random.Next(0, 128), (byte)random.Next(128, 256), (byte)random.Next(128, 256)));
                 Ellipse ellipse = new Ellipse
@@ -59,14 +58,48 @@ namespace Model
                     Height = 10,
                     Fill = brush
                 };
-                Canvas.SetLeft(ellipse, logicAPI.getDataAPI().GetBall(i).X);
-                Canvas.SetTop(ellipse, logicAPI.getDataAPI().GetBall(i).Y);
+
+                // Obliczamy losowe pozycje elipsy w obrębie ramki
+                double x = random.Next(0, (int)Canvas.Width - 10);
+                double y = random.Next(0, (int)Canvas.Height - 10);
+
+                // Sprawdzamy, czy nowa elipsa nie nakłada się na istniejące elipsy
+                bool isOverlapping = CheckForOverlap(x, y);
+                while (isOverlapping)
+                {
+                    x = random.Next(0, (int)Canvas.Width - 10);
+                    y = random.Next(0, (int)Canvas.Height - 10);
+                    isOverlapping = CheckForOverlap(x, y);
+                }
+
+                // Ustawiamy pozycję nowej elipsy
+                Canvas.SetLeft(ellipse, x);
+                Canvas.SetTop(ellipse, y);
 
                 ellipseCollection.Add(ellipse);
                 Canvas.Children.Add(ellipse);
             }
         }
+
+
+        // Metoda sprawdzająca, czy nowa elipsa nie nakłada się na istniejące elipsy
+        private bool CheckForOverlap(double x, double y)
+        {
+            foreach (var existingEllipse in ellipseCollection)
+            {
+                double existingX = Canvas.GetLeft(existingEllipse);
+                double existingY = Canvas.GetTop(existingEllipse);
+
+                // Sprawdzamy czy nowa elipsa nakłada się na istniejącą elipsę
+                if (Math.Abs(existingX - x) < 20 && Math.Abs(existingY - y) < 20)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
+
 
 
 }

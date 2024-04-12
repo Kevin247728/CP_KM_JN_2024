@@ -6,28 +6,30 @@
         xmlns:vm="clr-namespace:ViewModel;assembly=ViewModel"
         xmlns:local="clr-namespace:View"
         mc:Ignorable="d"
-        Title="MainWindow" Height="703" Width="700" Background="#3385b5" Foreground="Black" BorderBrush="Black">
-    <Window.DataContext>
-        <vm:MainViewModel/>
-    </Window.DataContext>
+        Title="MainWindow" Height="1080" Width="1920" Background="#3385b5" Foreground="Black" BorderBrush="Black">
+	<Window.DataContext>
+		<vm:MainViewModel/>
+	</Window.DataContext>
 
-    <Grid Margin="0,0,0,-6">
-        <ContentPresenter Content="{Binding Canvas}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="267,0,0,0"/>
-        <Border BorderBrush="#375573" BorderThickness="5,5,5,5" Height="349" Width="557" HorizontalAlignment="Left" VerticalAlignment="Top" RenderTransformOrigin="-0.276,0.478" Canvas.Left="-106" Canvas.Top="-177" >
-            <Border.RenderTransform>
-                <TransformGroup>
-                    <ScaleTransform/>
-                    <SkewTransform/>
-                    <RotateTransform Angle="90"/>
-                    <TranslateTransform X="600.344" Y="-300.568"/>
-                </TransformGroup>
-            </Border.RenderTransform>
-        </Border>
+	<Grid Margin="0,0,0,-6" HorizontalAlignment="Left">
+		<ContentPresenter Content="{Binding Canvas}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="290,0,0,210"/>
+		<Border BorderBrush="#375573" BorderThickness="5,5,5,5" Height="349" Width="557" HorizontalAlignment="Left" VerticalAlignment="Top" RenderTransformOrigin="-0.276,0.478" Canvas.Left="-106" Canvas.Top="-177" >
+			<Border.RenderTransform>
+				<TransformGroup>
+					<ScaleTransform/>
+					<SkewTransform/>
+					<RotateTransform Angle="90"/>
+					<TranslateTransform X="600.344" Y="-300.568"/>
+				</TransformGroup>
+			</Border.RenderTransform>
+		</Border>
 
-        <TextBox HorizontalAlignment="Left" VerticalContentAlignment="Center" Margin="40,208,0,0" TextWrapping="Wrap" Text="{Binding NumberOfBallsToAdd}"  VerticalAlignment="Top" Width="182" Height="88" TextAlignment="Center" FontSize="40" BorderBrush="#375573" BorderThickness="5,5,5,5" />
-        <Button Margin="32,55,470,500" Content="ADD" FontSize="40" BorderThickness="5,5,5,5" BorderBrush="Black" Command="{Binding AddCommand}" ></Button>
-        <Button x:Name= "StopButton" Margin="32,519,470,71" Content="STOP" BorderThickness="5,5,5,5" BorderBrush="Black" FontSize="40" Command="{Binding StopCommand}" ></Button>
-        <Button Margin="32,416,470,191" Content="Start" FontSize="40" BorderThickness="5,5,5,5" BorderBrush="Black" Command="{Binding RunCommand}" ></Button>
-        <Button x:Name= "DeleteButton" Margin="32,312,470,292" Content="Delete" BorderThickness="5,5,5,5" FontSize="40" BorderBrush="Black" Command="{Binding DeleteCommand}" />
-    </Grid>
+		<StackPanel Margin="40,30,0,0" Orientation="Vertical" HorizontalAlignment="Left">
+			<TextBox VerticalContentAlignment="Center" TextWrapping="Wrap" Text="{Binding NumberOfBallsToAdd}" Width="182" Height="88" TextAlignment="Center" FontSize="40" BorderBrush="#375573" BorderThickness="5,5,5,5" />
+			<Button Content="ADD" Width="182" Height="88" FontSize="40" BorderThickness="5,5,5,5" BorderBrush="Black" Command="{Binding AddCommand}" Margin="0,10,0,0"/>
+			<Button x:Name="StopButton" Content="STOP" Width="182" Height="88" FontSize="40" BorderThickness="5,5,5,5" BorderBrush="Black" Command="{Binding StopCommand}" Margin="0,10,0,0"/>
+			<Button Content="Start" Width="182" Height="88" FontSize="40" BorderThickness="5,5,5,5" BorderBrush="Black" Command="{Binding RunCommand}" Margin="0,10,0,0"/>
+			<Button x:Name="DeleteButton" Content="Delete" Width="182" Height="88" FontSize="40" BorderThickness="5,5,5,5" BorderBrush="Black" Command="{Binding DeleteCommand}" Margin="0,10,0,0"/>
+		</StackPanel>
+	</Grid>
 </Window>
