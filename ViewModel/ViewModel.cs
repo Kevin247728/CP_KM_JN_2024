@@ -5,46 +5,52 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
-using Intersoft.Crosslight;
+using System;
 
 namespace ViewModel
 {
-    public class MainViewModel : INotifyPropertyChanged 
+    public class MainViewModel : INotifyPropertyChanged
     {
         private readonly ILogicAPI logicAPI;
         private ObservableCollection<IBall> _balls;
         private int _numberOfBallsToAdd;
 
-        public ObservableCollection<IBall> Balls 
+        public ObservableCollection<IBall> Balls
         {
-            get => _balls; 
+            get => _balls;
             set
             {
                 if (value.Equals(_balls))
                 {
                     return;
                 }
-                _balls = value; 
-                OnPropertyChanged(); 
+                _balls = value;
+                OnPropertyChanged();
             }
         }
 
-        public int NumberOfBallsToAdd 
+        public int NumberOfBallsToAdd
         {
             get => _numberOfBallsToAdd; //getter
             set //setter
             {
                 _numberOfBallsToAdd = value;
-                OnPropertyChanged(); 
+                OnPropertyChanged();
             }
         }
 
         public ICommand StartCommand { get; }
         public ICommand StopCommand { get; }
 
-        public MainViewModel(ILogicAPI logicAPI) 
+        //public MainViewModel(ILogicAPI logicAPI)
+        //{
+        //    this.logicAPI = logicAPI ?? throw new ArgumentNullException(nameof(logicAPI));
+        //    StartCommand = new RelayCommand(StartSimulation, CanStartSimulation);
+        //    StopCommand = new RelayCommand(StopSimulation, CanStopSimulation);
+        //}
+
+        public MainViewModel()
         {
-            this.logicAPI = logicAPI ?? throw new ArgumentNullException(nameof(logicAPI));
             StartCommand = new RelayCommand(StartSimulation, CanStartSimulation);
             StopCommand = new RelayCommand(StopSimulation, CanStopSimulation);
         }
@@ -104,4 +110,3 @@ namespace ViewModel
 
 
 }
-

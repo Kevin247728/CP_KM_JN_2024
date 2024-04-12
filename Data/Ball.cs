@@ -35,7 +35,7 @@ namespace Data
             this.velocity = velocity;
             this.position = position;
             this.r = r;
-            this.id = id;   
+            this.id = id;
         }
 
         public void MoveBall()
@@ -71,5 +71,4 @@ namespace Data
         }
     }
 }
-
 

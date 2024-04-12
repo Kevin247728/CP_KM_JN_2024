@@ -13,8 +13,6 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-using ViewModel;
-
 namespace View
 {
     /// <summary>
@@ -22,20 +20,9 @@ namespace View
     /// </summary>
     public partial class MainWindow : Window
     {
-        public MainWindow()     //konstruktor klays
+        public MainWindow()
         {
             InitializeComponent();
-          //  _viewModel = new ViewModel.MainViewModel(new Model.BallService());
-        //    DataContext = _viewModel;
         }
-
-        //private void Start_Click(object sender, RoutedEventArgs e)  //obsługuje kliknięcie przycisku Start.
-        //{
-          //  _viewModel.StartSimulation();
-        //}
     }
 }
-
-            
-         
-
