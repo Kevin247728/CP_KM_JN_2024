@@ -8,6 +8,9 @@ using System.Windows.Controls;
 using System.Collections.Generic;
 using System.Windows;
 
+using System.Windows.Media.Animation;
+
+
 namespace Model
 {
     public abstract class ModelAbstractAPI
@@ -23,13 +26,15 @@ namespace Model
         }
     }
 
-    internal class ModelAPI : ModelAbstractAPI
+    public class ModelAPI : ModelAbstractAPI
     {
         private readonly LogicAbstractAPI logicAPI;
         private readonly DataAbstractAPI dataAPI;
         public override List<Ellipse> ellipseCollection { get; }
         public override Canvas Canvas { get; set; }
         private readonly Random random;
+
+        private List<Storyboard> ballAnimations;
 
         public ModelAPI()
         {
@@ -42,8 +47,55 @@ namespace Model
             Canvas.Width = 300;
             Canvas.Height = 500;
             random = new Random();
+
+            ballAnimations = new List<Storyboard>();
         }
 
+
+        public void StartBallAnimation()
+        {
+            foreach (var ellipse in ellipseCollection)
+            {
+                DoubleAnimation animationX = new DoubleAnimation
+                {
+                    From = Canvas.GetLeft(ellipse),
+                    To = Canvas.GetLeft(ellipse) + 100, // Przykładowy ruch kul wzdłuż osi X o 100 jednostek
+                    Duration = TimeSpan.FromSeconds(1), // Przykładowy czas trwania animacji
+                    RepeatBehavior = RepeatBehavior.Forever, // Powtarzaj animację w nieskończoność
+                    AutoReverse = true // Automatyczne odwracanie animacji
+                };
+
+                DoubleAnimation animationY = new DoubleAnimation
+                {
+                    From = Canvas.GetTop(ellipse),
+                    To = Canvas.GetTop(ellipse) + 100, // Przykładowy ruch kul wzdłuż osi Y o 100 jednostek
+                    Duration = TimeSpan.FromSeconds(1), // Przykładowy czas trwania animacji
+                    RepeatBehavior = RepeatBehavior.Forever, // Powtarzaj animację w nieskończoność
+                    AutoReverse = true // Automatyczne odwracanie animacji
+                };
+
+                Storyboard.SetTarget(animationX, ellipse);
+                Storyboard.SetTargetProperty(animationX, new PropertyPath(Canvas.LeftProperty));
+                Storyboard.SetTarget(animationY, ellipse);
+                Storyboard.SetTargetProperty(animationY, new PropertyPath(Canvas.TopProperty));
+
+                Storyboard storyboard = new Storyboard();
+                storyboard.Children.Add(animationX);
+                storyboard.Children.Add(animationY);
+
+                ballAnimations.Add(storyboard);
+
+                storyboard.Begin();
+            }
+        }
+
+        public void StopBallAnimation()
+        {
+            foreach (var storyboard in ballAnimations)
+            {
+                storyboard.Stop();
+            }
+        }
 
         public override void CreateEllipses(int numberOfBalls)
         {
@@ -98,6 +150,7 @@ namespace Model
             }
             return false;
         }
+
     }
 
 

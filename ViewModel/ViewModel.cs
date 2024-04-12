@@ -1,5 +1,4 @@
-﻿
-using Logic;
+﻿using Logic;
 using Data;
 using Model;
 using System.Collections.ObjectModel;
@@ -13,19 +12,20 @@ namespace ViewModel
 {
     public class MainViewModel : INotifyPropertyChanged
     {
-        private readonly ModelAbstractAPI _model;
+        private readonly ModelAPI _model; // Zmiana typu referencji na ModelAPI
         public int _numberOfBallsToAdd;
 
         public MainViewModel()
         {
-            _model = ModelAbstractAPI.CreateModelAPI();
+            _model = (ModelAPI)ModelAbstractAPI.CreateModelAPI(); // Rzutowanie na ModelAPI
             AddCommand = new RelayCommand(StartSimulation);
+            RunCommand = new RelayCommand(StartAnimation);
+            StopCommand = new RelayCommand(StopAnimation);
         }
 
         public Canvas Canvas
         {
             get => _model.Canvas;
-
         }
 
         public int NumberOfBallsToAdd
@@ -42,10 +42,22 @@ namespace ViewModel
         }
 
         public ICommand AddCommand { get; }
+        public ICommand RunCommand { get; }
+        public ICommand StopCommand { get; }
 
         private void StartSimulation()
         {
             _model.CreateEllipses(NumberOfBallsToAdd);
+        }
+
+        private void StartAnimation()
+        {
+            _model.StartBallAnimation();
+        }
+
+        private void StopAnimation()
+        {
+            _model.StopBallAnimation();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
