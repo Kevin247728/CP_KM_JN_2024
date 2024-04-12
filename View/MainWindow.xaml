@@ -22,13 +22,13 @@
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
-            <Border BorderBrush="#375573" BorderThickness="5,5,5,5" Height="404" Width="556" HorizontalAlignment="Center" VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5" Canvas.Left="-77" Canvas.Top="71" >
+            <Border BorderBrush="#375573" BorderThickness="5,5,5,5" Height="349" Width="557" HorizontalAlignment="Left" VerticalAlignment="Top" RenderTransformOrigin="-0.276,0.478" Canvas.Left="-106" Canvas.Top="-177" >
                 <Border.RenderTransform>
                     <TransformGroup>
                         <ScaleTransform/>
                         <SkewTransform/>
                         <RotateTransform Angle="90"/>
-                        <TranslateTransform/>
+                        <TranslateTransform X="440.344" Y="-422.568"/>
                     </TransformGroup>
                 </Border.RenderTransform>
             </Border>
