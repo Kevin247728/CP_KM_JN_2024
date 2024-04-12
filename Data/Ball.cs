@@ -10,17 +10,10 @@ namespace Data
         int ID { get; }
         Vector2 Position { get; set; }
         Vector2 Velocity { get; set; }
+        float X {  get; set; }
+        float Y { get; set; }
 
         void MoveBall();
-    }
-
-    public interface IDataAPI
-    {
-        int GetBoardWidth();
-        int GetBoardHeight();
-        IBall CreateBall(Vector2 position, Vector2 velocity, int radius);
-        IBall GetBall(int index);
-        int GetBallsCount();
     }
 
     internal class Ball : IBall

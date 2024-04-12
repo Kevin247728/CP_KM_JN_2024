@@ -12,31 +12,22 @@
     </Window.DataContext>
 
     <Grid Margin="0,0,0,-6">
-        <Canvas Width="{Binding Width}" Height="{Binding Height}" VerticalAlignment="Center" HorizontalAlignment="Left" Background="#F5FACD" Margin="267,0,0,0">
-            <ItemsControl Name="Balls" ItemsSource="{Binding Balls}">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <Canvas>
-                            <Ellipse Stroke="Black" Fill="Blue"  Width="{Binding Size}" Height="{Binding Size}" Canvas.Left="{Binding X}" Canvas.Top="{Binding Y}"/>
-                        </Canvas>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-            <Border BorderBrush="#375573" BorderThickness="5,5,5,5" Height="349" Width="557" HorizontalAlignment="Left" VerticalAlignment="Top" RenderTransformOrigin="-0.276,0.478" Canvas.Left="-106" Canvas.Top="-177" >
-                <Border.RenderTransform>
-                    <TransformGroup>
-                        <ScaleTransform/>
-                        <SkewTransform/>
-                        <RotateTransform Angle="90"/>
-                        <TranslateTransform X="440.344" Y="-422.568"/>
-                    </TransformGroup>
-                </Border.RenderTransform>
-            </Border>
-        </Canvas>
-        <TextBox HorizontalAlignment="Left" VerticalContentAlignment="Center" Margin="40,208,0,0" TextWrapping="Wrap" Text="{Binding BallVal}"  VerticalAlignment="Top" Width="182" Height="88" TextAlignment="Center" FontSize="40" BorderBrush="#375573" BorderThickness="5,5,5,5" />
-        <Button Margin="32,55,470,500" Content="ADD" FontSize="40" BorderThickness="5,5,5,5" BorderBrush="Black" Command="{Binding AddCommand}" IsEnabled="{Binding isAddEnabled}" ></Button>
-        <Button x:Name= "StopButton" Margin="32,519,470,71" Content="STOP" BorderThickness="5,5,5,5" BorderBrush="Black" FontSize="40" Command="{Binding StopCommand}" IsEnabled="{Binding isStopEnabled}" ></Button>
-        <Button Margin="32,416,470,191" Content="Start" FontSize="40" BorderThickness="5,5,5,5" BorderBrush="Black" Command="{Binding RunCommand}" IsEnabled="{Binding isRunEnabled}" ></Button>
-        <Button x:Name= "DeleteButton" Margin="32,312,470,292" Content="Delete" BorderThickness="5,5,5,5" FontSize="40" BorderBrush="Black" Command="{Binding DeleteCommand}" IsEnabled="{Binding isDeleteEnabled}"/>
+        <ContentPresenter Content="{Binding Canvas}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="267,0,0,0"/>
+        <Border BorderBrush="#375573" BorderThickness="5,5,5,5" Height="349" Width="557" HorizontalAlignment="Left" VerticalAlignment="Top" RenderTransformOrigin="-0.276,0.478" Canvas.Left="-106" Canvas.Top="-177" >
+            <Border.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform/>
+                    <RotateTransform Angle="90"/>
+                    <TranslateTransform X="600.344" Y="-300.568"/>
+                </TransformGroup>
+            </Border.RenderTransform>
+        </Border>
+
+        <TextBox HorizontalAlignment="Left" VerticalContentAlignment="Center" Margin="40,208,0,0" TextWrapping="Wrap" Text="{Binding NumberOfBallsToAdd}"  VerticalAlignment="Top" Width="182" Height="88" TextAlignment="Center" FontSize="40" BorderBrush="#375573" BorderThickness="5,5,5,5" />
+        <Button Margin="32,55,470,500" Content="ADD" FontSize="40" BorderThickness="5,5,5,5" BorderBrush="Black" Command="{Binding AddCommand}" ></Button>
+        <Button x:Name= "StopButton" Margin="32,519,470,71" Content="STOP" BorderThickness="5,5,5,5" BorderBrush="Black" FontSize="40" Command="{Binding StopCommand}" ></Button>
+        <Button Margin="32,416,470,191" Content="Start" FontSize="40" BorderThickness="5,5,5,5" BorderBrush="Black" Command="{Binding RunCommand}" ></Button>
+        <Button x:Name= "DeleteButton" Margin="32,312,470,292" Content="Delete" BorderThickness="5,5,5,5" FontSize="40" BorderBrush="Black" Command="{Binding DeleteCommand}" />
     </Grid>
 </Window>

@@ -4,20 +4,31 @@ using System.Numerics;
 
 namespace Logic
 {
-    public interface ILogicAPI
+    public abstract class LogicAbstractAPI
     {
-        void Start(int nrOfBalls);
+        public abstract void Start(int nrOfBalls);
+        public abstract DataAbstractAPI getDataAPI();
+        public static LogicAbstractAPI CreateLogicAPI()
+        {
+            return new LogicAPI();
+        }
     }
 
-    internal class LogicAPI : ILogicAPI
+    internal class LogicAPI : LogicAbstractAPI
     {
-        private IDataAPI dataAPI;
+        private DataAbstractAPI dataAPI;
 
-        public LogicAPI(IDataAPI dataAPI)
+        public LogicAPI()
         {
-            this.dataAPI = dataAPI ?? throw new ArgumentNullException(nameof(dataAPI));
+            this.dataAPI = DataAbstractAPI.CreateAPI();
         }
-        public void Start(int nrOfBalls)
+
+        public override DataAbstractAPI getDataAPI()
+        {
+            return this.dataAPI;
+        }
+
+        public override void Start(int nrOfBalls)
         {
             Vector2 maxPosition = new Vector2(dataAPI.GetBoardWidth(), dataAPI.GetBoardHeight());
             Vector2 maxVelocity = new Vector2(2.0f, 2.0f);
@@ -35,5 +46,8 @@ namespace Logic
                     maxVelocity, radius);
             }
         }
+
+
     }
 }
+    
