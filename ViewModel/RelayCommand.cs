@@ -19,12 +19,6 @@ namespace ViewModel
             _canExecute = canExecute;
         }
 
-        //public event EventHandler CanExecuteChanged
-        //{
-        //    add { _canExecuteChanged += value; }
-        //    remove { _canExecuteChanged -= value; }
-        //}
-
         public bool CanExecute(object parameter)
         {
             if (_canExecute == null)
@@ -39,6 +33,5 @@ namespace ViewModel
             this._execute();
         }
 
-        //public void RaiseCanExecuteChanged() => _canExecuteChanged?.Invoke(this, EventArgs.Empty);
     }
 }

@@ -51,21 +51,6 @@ namespace Model
             ballAnimations = new List<Storyboard>();
         }
 
-        public void MoveBall(Ellipse ellipse, double deltaX, double deltaY)
-        {
-            double newX = Canvas.GetLeft(ellipse) + deltaX;
-            double newY = Canvas.GetTop(ellipse) + deltaY;
-
-            // Sprawdź, czy nowa pozycja znajduje się wewnątrz ramki
-            if (newX >= 0 && newY >= 0 && newX + ellipse.Width <= Canvas.Width && newY + ellipse.Height <= Canvas.Height)
-            {
-                Canvas.SetLeft(ellipse, newX);
-                Canvas.SetTop(ellipse, newY);
-            }
-        }
-
-
-
         public void StartBallAnimation()
         {
             foreach (var ellipse in ellipseCollection)

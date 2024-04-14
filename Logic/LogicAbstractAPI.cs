@@ -14,7 +14,7 @@ namespace Logic
         }
     }
 
-    internal class LogicAPI : LogicAbstractAPI
+    public class LogicAPI : LogicAbstractAPI
     {
         private DataAbstractAPI dataAPI;
 

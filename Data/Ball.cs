@@ -10,7 +10,7 @@ namespace Data
         int ID { get; }
         Vector2 Position { get; set; }
         Vector2 Velocity { get; set; }
-        float X {  get; set; }
+        float X { get; set; }
         float Y { get; set; }
 
         void MoveBall();
@@ -33,7 +33,7 @@ namespace Data
 
         public void MoveBall()
         {
-            position += new Vector2((float)Math.Cos(Math.PI / 180.0), (float)Math.Sin(Math.PI / 180.0));
+            position += velocity; // Używamy prędkości do poruszania kuli
         }
 
         public float X
@@ -64,4 +64,3 @@ namespace Data
         }
     }
 }
-
