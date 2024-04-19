@@ -1,6 +1,4 @@
-﻿using Logic;
-using Data;
-using Model;
+﻿using Model;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -18,8 +16,8 @@ namespace ViewModel
         public MainViewModel()
         {
             _model = (ModelAPI)ModelAbstractAPI.CreateModelAPI(); // Rzutowanie na ModelAPI
-            AddCommand = new RelayCommand(StartSimulation);
-            RunCommand = new RelayCommand(StartAnimation);
+            AddCommand = new RelayCommand(StartSimulation, CanStartSimulation);
+            RunCommand = new RelayCommand(StartAnimation, CanStartAnimation);
             StopCommand = new RelayCommand(StopAnimation);
         }
 
@@ -58,6 +56,16 @@ namespace ViewModel
         private void StopAnimation()
         {
             _model.StopBallAnimation();
+        }
+
+        private bool CanStartSimulation()
+        {
+            return !_model.IsAnimating;
+        }
+
+        private bool CanStartAnimation()
+        {
+            return !_model.IsAnimating;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using Logic;
-using Data;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Windows.Controls;
@@ -19,6 +18,7 @@ namespace Model
         public abstract void CreateEllipses(int nrOfBalls);
         public abstract Canvas Canvas { get; set; }
         public abstract List<Ellipse> ellipseCollection { get; }
+        public abstract bool IsAnimating { get; set; }
 
         public static ModelAbstractAPI CreateModelAPI()
         {
@@ -29,16 +29,26 @@ namespace Model
     public class ModelAPI : ModelAbstractAPI
     {
         private readonly LogicAbstractAPI logicAPI;
-        private readonly DataAbstractAPI dataAPI;
         public override List<Ellipse> ellipseCollection { get; }
         public override Canvas Canvas { get; set; }
         private readonly Random random;
 
         private List<Storyboard> ballAnimations;
+        private bool _isAnimating;
+        public override bool IsAnimating
+        {
+            get { return _isAnimating; }
+            set
+            {
+                if (_isAnimating != value)
+                {
+                    _isAnimating = value;
+                }
+            }
+        }
 
         public ModelAPI()
         {
-            dataAPI = DataAbstractAPI.CreateAPI();
             logicAPI = LogicAbstractAPI.CreateLogicAPI();
             Canvas = new Canvas();
             ellipseCollection = new List<Ellipse>();
@@ -53,31 +63,36 @@ namespace Model
 
         public void StartBallAnimation()
         {
-            foreach (var ellipse in ellipseCollection)
+            if (!IsAnimating)
             {
-                double speedX = GetRandomSpeed(); 
-                double speedY = GetRandomSpeed(); 
+                IsAnimating = true;
 
-                CompositionTarget.Rendering += (sender, e) =>
+                foreach (var ellipse in ellipseCollection)
                 {
-                    double newX = Canvas.GetLeft(ellipse) + speedX;
-                    double newY = Canvas.GetTop(ellipse) + speedY;
+                    double speedX = GetRandomSpeed();
+                    double speedY = GetRandomSpeed();
 
-                    // Sprawdź, czy kulka dotknęła krawędzi ramki i jeśli tak, odwróć jej kierunek
-                    if (newX >= Canvas.ActualWidth - ellipse.Width || newX <= 0)
+                    CompositionTarget.Rendering += (sender, e) =>
                     {
-                        speedX *= -1; // Odwróć kierunek w osi X
-                    }
+                        double newX = Canvas.GetLeft(ellipse) + speedX;
+                        double newY = Canvas.GetTop(ellipse) + speedY;
 
-                    if (newY >= Canvas.ActualHeight - ellipse.Height || newY <= 0)
-                    {
-                        speedY *= -1; // Odwróć kierunek w osi Y
-                    }
+                        // Sprawdź, czy kulka dotknęła krawędzi ramki i jeśli tak, odwróć jej kierunek
+                        if (newX >= Canvas.ActualWidth - ellipse.Width || newX <= 0)
+                        {
+                            speedX *= -1; // Odwróć kierunek w osi X
+                        }
 
-                    // Aktualizuj pozycję kulki
-                    Canvas.SetLeft(ellipse, newX);
-                    Canvas.SetTop(ellipse, newY);
-                };
+                        if (newY >= Canvas.ActualHeight - ellipse.Height || newY <= 0)
+                        {
+                            speedY *= -1; // Odwróć kierunek w osi Y
+                        }
+
+                        // Aktualizuj pozycję kulki
+                        Canvas.SetLeft(ellipse, newX);
+                        Canvas.SetTop(ellipse, newY);
+                    };
+                }
             }
         }
 
