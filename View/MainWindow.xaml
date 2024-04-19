@@ -6,7 +6,7 @@
         xmlns:vm="clr-namespace:ViewModel;assembly=ViewModel"
         xmlns:local="clr-namespace:View"
         mc:Ignorable="d"
-        Title="MainWindow" Height="1080" Width="1920" Background="#3385b5" Foreground="Black" BorderBrush="Black">
+        Title="MainWindow" Height="1080" Width="1920" Background="#ffffff" Foreground="Black" BorderBrush="Black">
 	<Window.DataContext>
 		<vm:MainViewModel/>
 	</Window.DataContext>

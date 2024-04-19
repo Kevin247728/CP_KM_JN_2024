@@ -10,7 +10,7 @@ namespace ViewModel
 {
     public class MainViewModel : INotifyPropertyChanged
     {
-        private readonly ModelAPI _model; 
+        private readonly ModelAPI _model;
         public int _numberOfBallsToAdd;
 
         public MainViewModel()
@@ -18,7 +18,8 @@ namespace ViewModel
             _model = (ModelAPI)ModelAbstractAPI.CreateModelAPI(); // Rzutowanie na ModelAPI
             AddCommand = new RelayCommand(StartSimulation, CanStartSimulation);
             RunCommand = new RelayCommand(StartAnimation, CanStartAnimation);
-            StopCommand = new RelayCommand(StopAnimation);
+            StopCommand = new RelayCommand(StopAnimation, CanStopAnimation);
+            DeleteCommand = new RelayCommand(DeleteBalls, CanDeleteBalls);
         }
 
         public Canvas Canvas
@@ -42,6 +43,7 @@ namespace ViewModel
         public ICommand AddCommand { get; }
         public ICommand RunCommand { get; }
         public ICommand StopCommand { get; }
+        public ICommand DeleteCommand { get; }
 
         private void StartSimulation()
         {
@@ -58,6 +60,11 @@ namespace ViewModel
             _model.StopBallAnimation();
         }
 
+        private void DeleteBalls()
+        {
+            _model.DeleteEllipses();
+        }
+
         private bool CanStartSimulation()
         {
             return !_model.IsAnimating;
@@ -67,6 +74,15 @@ namespace ViewModel
         {
             return !_model.IsAnimating;
         }
+
+        private bool CanStopAnimation()
+        {
+            return _model.IsAnimating;
+        }
+
+        private bool CanDeleteBalls()
+        { return _model.IsAnimating; }
+
 
         public event PropertyChangedEventHandler PropertyChanged;
 

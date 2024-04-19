@@ -104,10 +104,16 @@ namespace Model
 
         public void StopBallAnimation()
         {
-            foreach (var storyboard in ballAnimations)
+            if (IsAnimating)
             {
-                storyboard.Pause();
+                IsAnimating = false;
+                foreach (var storyboard in ballAnimations)
+                {
+                    storyboard.Pause();
+                }
             }
+            
+
         }
 
 
@@ -144,6 +150,15 @@ namespace Model
                 ellipseCollection.Add(ellipse);
                 Canvas.Children.Add(ellipse);
             }
+        }
+
+        public void DeleteEllipses()
+        {
+            foreach (var ellipse in ellipseCollection)
+            {
+                Canvas.Children.Remove(ellipse);
+            }
+            ellipseCollection.Clear();
         }
 
         private bool CheckForOverlap(double x, double y)
