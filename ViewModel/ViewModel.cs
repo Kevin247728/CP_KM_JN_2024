@@ -81,7 +81,7 @@ namespace ViewModel
         }
 
         private bool CanDeleteBalls()
-        { return _model.IsAnimating; }
+        { return !_model.IsAnimating; }
 
 
         public event PropertyChangedEventHandler PropertyChanged;
