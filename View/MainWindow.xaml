@@ -6,23 +6,16 @@
         xmlns:vm="clr-namespace:ViewModel;assembly=ViewModel"
         xmlns:local="clr-namespace:View"
         mc:Ignorable="d"
-        Title="MainWindow" Height="1080" Width="1920" Background="#ffffff" Foreground="Black" BorderBrush="Black">
+        Title="MainWindow" Height="700" Width="1200" Background="#ffffff" Foreground="Black" BorderBrush="Black">
 	<Window.DataContext>
 		<vm:MainViewModel/>
 	</Window.DataContext>
 
-	<Grid Margin="0,0,0,-6" HorizontalAlignment="Left">
-		<ContentPresenter Content="{Binding Canvas}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="290,0,0,210"/>
-		<Border BorderBrush="#375573" BorderThickness="5,5,5,5" Height="349" Width="557" HorizontalAlignment="Left" VerticalAlignment="Top" RenderTransformOrigin="-0.276,0.478" Canvas.Left="-106" Canvas.Top="-177" >
-			<Border.RenderTransform>
-				<TransformGroup>
-					<ScaleTransform/>
-					<SkewTransform/>
-					<RotateTransform Angle="90"/>
-					<TranslateTransform X="600.344" Y="-300.568"/>
-				</TransformGroup>
-			</Border.RenderTransform>
-		</Border>
+	<Grid Margin="10">
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="300" />
+			<ColumnDefinition Width="500" />
+		</Grid.ColumnDefinitions>
 
 		<StackPanel Margin="40,30,0,0" Orientation="Vertical" HorizontalAlignment="Left">
 			<TextBox VerticalContentAlignment="Center" TextWrapping="Wrap" Text="{Binding NumberOfBallsToAdd}" Width="182" Height="88" TextAlignment="Center" FontSize="40" BorderBrush="#375573" BorderThickness="5,5,5,5" />
@@ -31,5 +24,15 @@
 			<Button Content="Start" Width="182" Height="88" FontSize="40" BorderThickness="5,5,5,5" BorderBrush="Black" Command="{Binding RunCommand}" Margin="0,10,0,0"/>
 			<Button x:Name="DeleteButton" Content="Delete" Width="182" Height="88" FontSize="40" BorderThickness="5,5,5,5" BorderBrush="Black" Command="{Binding DeleteCommand}" Margin="0,10,0,0"/>
 		</StackPanel>
+
+		<Border BorderBrush="#375573"
+                BorderThickness="5,5,5,5"
+                Grid.Column="1"
+                VerticalAlignment="Stretch"
+                HorizontalAlignment="Stretch">
+			<ContentPresenter Content="{Binding Canvas}"
+                              HorizontalAlignment="Stretch"
+                              VerticalAlignment="Stretch" />
+		</Border>
 	</Grid>
 </Window>
