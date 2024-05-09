@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Windows;
 
 using System.Windows.Media.Animation;
+using System.Numerics;
 
 
 namespace Model
@@ -31,11 +32,12 @@ namespace Model
         public override List<Ellipse> ellipseCollection { get; }
         public override Canvas Canvas { get; set; }
         private readonly Random random;
-
+        private int ballsCreated = 0;
         private List<(Ellipse, EventHandler)> ballHandlers;
         private List<Storyboard> ballAnimations;
         public event EventHandler IsAnimatingChanged;
         private EventHandler renderingHandler;
+        private Dictionary<int, Ellipse> ellipseDictionary = new Dictionary<int, Ellipse>();
 
 
         private bool _isAnimating;
@@ -62,8 +64,8 @@ namespace Model
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
-                Width = 490,
-                Height = 630,
+                Width = logicAPI.GetBoardWidth(),
+                Height = logicAPI.GetBoardHeight(),
             };
             random = new Random();
 
@@ -74,70 +76,58 @@ namespace Model
 
         public override void CreateEllipses(int numberOfBalls)
         {
-            logicAPI.Start(numberOfBalls);
+            logicAPI.CreateBalls(numberOfBalls);
 
-            for (int i = 0; i < numberOfBalls; i++)
+            for (int i = ballsCreated; i < numberOfBalls + ballsCreated; i++)
             {
                 SolidColorBrush brush = new SolidColorBrush(Color.FromRgb((byte)random.Next(0, 128), (byte)random.Next(128, 256), (byte)random.Next(128, 256)));
                 Ellipse ellipse = new Ellipse
                 {
-                    Width = 10,
-                    Height = 10,
+                    Width = logicAPI.GetBallRadius(),
+                    Height = logicAPI.GetBallRadius(),
                     Fill = brush
                 };
 
-                double x = random.Next(0, (int)Canvas.Width - 10);
-                double y = random.Next(0, (int)Canvas.Height - 10);
+                Vector2 position = logicAPI.GetBallPosition(i);
 
-                // Sprawdzamy, czy nowa elipsa nie nakłada się na istniejące elipsy
-                bool isOverlapping = CheckForOverlap(x, y);
-                while (isOverlapping)
-                {
-                    x = random.Next(0, (int)Canvas.Width - 10);
-                    y = random.Next(0, (int)Canvas.Height - 10);
-                    isOverlapping = CheckForOverlap(x, y);
-                }
+                double x = position.X;
+                double y = position.Y;
 
                 Canvas.SetLeft(ellipse, x);
                 Canvas.SetTop(ellipse, y);
 
                 ellipseCollection.Add(ellipse);
+                int ellipseIndex = ellipseCollection.Count - 1;
+                ellipseDictionary.Add(ellipseIndex, ellipse);
+
                 Canvas.Children.Add(ellipse);
 
-                EventHandler renderingHandler = CreateRenderingHandler(ellipse);
+                EventHandler renderingHandler = CreateRenderingHandler(ellipse, ellipseIndex);
                 ballHandlers.Add((ellipse, renderingHandler));
             }
+
+            ballsCreated += numberOfBalls;
         }
 
-        private EventHandler CreateRenderingHandler(Ellipse ellipse)
+        private EventHandler CreateRenderingHandler(Ellipse ellipse, int ellipseIndex)
         {
-            double speedX = GetRandomSpeed();
-            double speedY = GetRandomSpeed();
+            logicAPI.Start();
 
             return (sender, e) =>
             {
-                double currentX = Canvas.GetLeft(ellipse);
-                double currentY = Canvas.GetTop(ellipse);
+                Vector2 ballPosition = logicAPI.GetBallPosition(ellipseIndex);
+                Canvas.SetLeft(ellipse, ballPosition.X);
+                Canvas.SetTop(ellipse, ballPosition.Y);
+                //double currentX = Canvas.GetLeft(ellipse);
+                //double currentY = Canvas.GetTop(ellipse);
 
-                // Nowe pozycje po dodaniu prędkości
-                double newX = currentX + speedX;
-                double newY = currentY + speedY;
+                //// Nowe pozycje po dodaniu prędkości
+                //double newX = currentX + speedX;
+                //double newY = currentY + speedY;
 
-                // Sprawdzenie odbicia dla osi X
-                if (newX >= Canvas.ActualWidth - ellipse.Width || newX <= 0)
-                {
-                    speedX *= -1; // Odbicie
-                }
-
-                // Sprawdzenie odbicia dla osi Y
-                if (newY >= Canvas.ActualHeight - ellipse.Height || newY <= 0)
-                {
-                    speedY *= -1; // Odbicie
-                }
-
-                // Ustaw nowe pozycje
-                Canvas.SetLeft(ellipse, currentX + speedX);
-                Canvas.SetTop(ellipse, currentY + speedY);
+                //// Ustaw nowe pozycje
+                //Canvas.SetLeft(ellipse, currentX + speedX);
+                //Canvas.SetTop(ellipse, currentY + speedY);
             };
         }
 
@@ -181,22 +171,5 @@ namespace Model
             ellipseCollection.Clear();
             ballHandlers.Clear();
         }
-
-        private bool CheckForOverlap(double x, double y)
-        {
-            foreach (var existingEllipse in ellipseCollection)
-            {
-                double existingX = Canvas.GetLeft(existingEllipse);
-                double existingY = Canvas.GetTop(existingEllipse);
-
-                // Sprawdzamy czy nowa elipsa nakłada się na istniejącą elipsę
-                if (Math.Abs(existingX - x) < 20 && Math.Abs(existingY - y) < 20)
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-
     }
 }

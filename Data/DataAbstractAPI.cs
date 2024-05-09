@@ -1,4 +1,7 @@
-﻿using System.Numerics;
+﻿using System;
+using System.Collections.Generic;
+using System.Numerics;
+using System.Threading.Tasks;
 
 namespace Data
 {
@@ -6,9 +9,12 @@ namespace Data
     {
         public abstract int GetBoardWidth();
         public abstract int GetBoardHeight();
-        public abstract IBall CreateBall(Vector2 position, Vector2 velocity, int radius);
+        public abstract IBall CreateBall(Vector2 position, Vector2 velocity);
         public abstract IBall GetBall(int index);
         public abstract int GetBallsCount();
+        public abstract int GetBallRadius();
+        public abstract List<Vector2> GetBallsPositions();
+        public abstract List<IBall> GetBalls();
         public static DataAbstractAPI CreateAPI()
         {
             return new DataAPI();
@@ -23,6 +29,16 @@ namespace Data
             return Board.width;
         }
 
+        public override List<Vector2> GetBallsPositions()
+        {
+            return balls.GetBallsPositions();
+        }
+
+        public override List<IBall> GetBalls()
+        {
+            return balls.GetBalls();
+        }
+
         public override int GetBoardHeight()
         {
             return Board.height;
@@ -33,9 +49,9 @@ namespace Data
             balls = new BallsCollection();
         }
 
-        public override IBall CreateBall(Vector2 position, Vector2 velocity, int radius)
+        public override IBall CreateBall(Vector2 position, Vector2 velocity)
         {
-            return balls.CreateBall(position, velocity, radius);
+            return balls.CreateBall(position, velocity);
         }
 
         public override int GetBallsCount()
@@ -46,6 +62,11 @@ namespace Data
         public override IBall GetBall(int index)
         {
             return balls.GetBall(index);
+        }
+
+        public override int GetBallRadius()
+        {
+            return Ball.GetBallRadius();
         }
     }
 }

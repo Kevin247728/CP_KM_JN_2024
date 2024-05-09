@@ -1,66 +1,78 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Diagnostics;
 using System.Numerics;
+using System.Threading.Tasks;
 
 namespace Data
 {
     public interface IBall
     {
-        int R { get; }
-        int ID { get; }
-        Vector2 Position { get; set; }
+        Vector2 Position { get; }
         Vector2 Velocity { get; set; }
-        float X { get; set; }
-        float Y { get; set; }
-
-        void MoveBall();
+        void StartMoving();
     }
+
 
     internal class Ball : IBall
     {
-        private Vector2 velocity;
         private Vector2 position;
-        private readonly int r;
-        private readonly int id;
+        private Vector2 velocity;
+        private static int r = 20;
 
-        public Ball(Vector2 position, Vector2 velocity, int r, int id)
+        private float mass { get; set; }
+        private static readonly int MILISECONDS_PER_STEP = 10;
+        private static readonly float STEP_SIZE = 0.1f;
+
+
+        internal Ball(Vector2 position, Vector2 velocity)
         {
             this.velocity = velocity;
             this.position = position;
-            this.r = r;
-            this.id = id;
+            this.mass = 100.0F;
         }
 
-        public void MoveBall()
+        public static int GetBallRadius()
         {
-            position += velocity; // Używamy prędkości do poruszania kuli
+            return r;
         }
-
-        public float X
-        {
-            get => position.X;
-            set => position.X = value;
-        }
-
-        public float Y
-        {
-            get => position.Y;
-            set => position.Y = value;
-        }
-        public int R => r;
-
-        public int ID => id;
 
         public Vector2 Position
         {
-            get => position;
-            set => position = value;
+            get
+            {
+                return position;     
+            }
         }
 
         public Vector2 Velocity
         {
-            get => velocity;
-            set => velocity = value;
+            get
+            {
+                return velocity;
+
+            }
+
+            set
+            {
+
+                velocity = value;
+
+            }
+        }
+
+        public async void StartMoving()
+        {
+            while (true)
+            {
+                Stopwatch watch = Stopwatch.StartNew();
+                float steps = Velocity.Length() / STEP_SIZE;
+
+                position += Vector2.Normalize(Velocity) * STEP_SIZE;
+
+                watch.Stop();
+                int delay = (int)(Convert.ToInt32(MILISECONDS_PER_STEP / steps) - watch.ElapsedMilliseconds);
+                await Task.Delay(delay > 0 ? delay : 0);
+            }
         }
     }
 }
