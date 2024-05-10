@@ -22,7 +22,6 @@ namespace ViewModel
             AddCommand = new RelayCommand(StartSimulation, CanStartSimulation);
             RunCommand = new RelayCommand(StartAnimation, CanStartAnimation);
             StopCommand = new RelayCommand(StopAnimation, CanStopAnimation);
-            DeleteCommand = new RelayCommand(DeleteBalls, CanDeleteBalls);
         }
 
         private void Model_IsAnimatingChanged(object sender, EventArgs e)
@@ -30,7 +29,6 @@ namespace ViewModel
             ((RelayCommand)RunCommand).RaiseCanExecuteChanged();
             ((RelayCommand)StopCommand).RaiseCanExecuteChanged();
             ((RelayCommand)AddCommand).RaiseCanExecuteChanged();
-            ((RelayCommand)DeleteCommand).RaiseCanExecuteChanged();
         }
 
         public bool IsAnimating => _model.IsAnimating;
@@ -56,7 +54,6 @@ namespace ViewModel
         public ICommand AddCommand { get; }
         public ICommand RunCommand { get; }
         public ICommand StopCommand { get; }
-        public ICommand DeleteCommand { get; }
 
         private void StartSimulation()
         {
@@ -79,11 +76,6 @@ namespace ViewModel
             }
         }
 
-        private void DeleteBalls()
-        {
-            _model.DeleteEllipses();
-        }
-
         private bool CanStartSimulation()
         {
             return !_model.IsAnimating;
@@ -98,10 +90,6 @@ namespace ViewModel
         {
             return _model.IsAnimating;
         }
-
-        private bool CanDeleteBalls()
-        { return !_model.IsAnimating; }
-
 
         public event PropertyChangedEventHandler PropertyChanged;
 

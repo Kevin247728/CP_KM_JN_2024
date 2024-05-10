@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using Logic;
 using System.Windows.Media;
 using System.Windows.Shapes;
@@ -34,9 +33,7 @@ namespace Model
         private readonly Random random;
         private int ballsCreated = 0;
         private List<(Ellipse, EventHandler)> ballHandlers;
-        private List<Storyboard> ballAnimations;
         public event EventHandler IsAnimatingChanged;
-        private EventHandler renderingHandler;
         private Dictionary<int, Ellipse> ellipseDictionary = new Dictionary<int, Ellipse>();
 
 
@@ -69,7 +66,6 @@ namespace Model
             };
             random = new Random();
 
-            ballAnimations = new List<Storyboard>();
             ballHandlers = new List<(Ellipse, EventHandler)>();
         }
 
@@ -111,24 +107,22 @@ namespace Model
 
         private EventHandler CreateRenderingHandler(Ellipse ellipse, int ellipseIndex)
         {
-            logicAPI.Start();
+                return (sender, e) =>
+                {
+                    if (Canvas.Children.Count != 0)
+                    {
+                        Vector2 ballPosition = logicAPI.GetBallPosition(ellipseIndex);
+                        Canvas.SetLeft(ellipse, ballPosition.X);
+                        Canvas.SetTop(ellipse, ballPosition.Y);
 
-            return (sender, e) =>
-            {
-                Vector2 ballPosition = logicAPI.GetBallPosition(ellipseIndex);
-                Canvas.SetLeft(ellipse, ballPosition.X);
-                Canvas.SetTop(ellipse, ballPosition.Y);
-                //double currentX = Canvas.GetLeft(ellipse);
-                //double currentY = Canvas.GetTop(ellipse);
+                        logicAPI.DetectAndHandleCollisions();
+                    }
 
-                //// Nowe pozycje po dodaniu prędkości
-                //double newX = currentX + speedX;
-                //double newY = currentY + speedY;
-
-                //// Ustaw nowe pozycje
-                //Canvas.SetLeft(ellipse, currentX + speedX);
-                //Canvas.SetTop(ellipse, currentY + speedY);
-            };
+                    else
+                    {
+                        Environment.Exit(0);
+                    }
+                };
         }
 
 
@@ -136,6 +130,7 @@ namespace Model
         {
             if (!IsAnimating)
             {
+                logicAPI.Start();
                 IsAnimating = true;
                 foreach (var handler in ballHandlers)
                 {
@@ -144,32 +139,18 @@ namespace Model
             }
         }
 
-        private double GetRandomSpeed()
-        {
-            Random random = new Random();
-            return random.NextDouble() * 5 + 1; // Losowa prędkość z zakresu 1-6
-        }
-
         public void StopBallAnimation()
         {
             if (IsAnimating)
             {
-                foreach (var handler in ballHandlers)
-                {
-                    CompositionTarget.Rendering -= handler.Item2;
-                }
+                logicAPI.Stop();
+                ballHandlers = null;
+                ellipseCollection.Clear();
+                logicAPI.ClearBalls();
+                ellipseDictionary.Clear();
                 IsAnimating = false;
+                Canvas.Children.Clear();
             }
-        }
-
-        public void DeleteEllipses()
-        {
-            foreach (var ellipse in ellipseCollection)
-            {
-                Canvas.Children.Remove(ellipse);
-            }
-            ellipseCollection.Clear();
-            ballHandlers.Clear();
         }
     }
 }

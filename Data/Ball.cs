@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Numerics;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Data
@@ -9,7 +10,9 @@ namespace Data
     {
         Vector2 Position { get; }
         Vector2 Velocity { get; set; }
+        float Mass { get; }
         void StartMoving();
+        void StopMoving();
     }
 
 
@@ -17,12 +20,13 @@ namespace Data
     {
         private Vector2 position;
         private Vector2 velocity;
-        private static int r = 20;
+        private static int r = 25;
 
         private float mass { get; set; }
-        private static readonly int MILISECONDS_PER_STEP = 10;
-        private static readonly float STEP_SIZE = 0.1f;
-
+        private static readonly int MILISECONDS_PER_STEP = 1;
+        private const float FIXED_STEP_SIZE = 0.6f;
+        private bool isMoving = true;
+        private readonly object lockObject = new object();
 
         internal Ball(Vector2 position, Vector2 velocity)
         {
@@ -44,6 +48,14 @@ namespace Data
             }
         }
 
+        public float Mass
+        {
+            get
+            {
+                return mass;
+            }
+        }
+
         public Vector2 Velocity
         {
             get
@@ -60,19 +72,45 @@ namespace Data
             }
         }
 
-        public async void StartMoving()
+        public void UpdatePosition(Vector2 newPosition)
         {
-            while (true)
+            lock (lockObject)
+            {
+                position = newPosition;
+            }
+        }
+
+        // Metoda do synchronizowanego aktualizowania prędkości kulki
+        public void UpdateVelocity(Vector2 newVelocity)
+        {
+            lock (lockObject)
+            {
+                velocity = newVelocity;
+            }
+        }
+
+        public void StartMoving()
+        {
+            while (isMoving)
             {
                 Stopwatch watch = Stopwatch.StartNew();
-                float steps = Velocity.Length() / STEP_SIZE;
 
-                position += Vector2.Normalize(Velocity) * STEP_SIZE;
+                Vector2 newPosition = position + Vector2.Normalize(Velocity) * FIXED_STEP_SIZE;
+                Vector2 interpolatedPosition = Vector2.Lerp(position, newPosition, FIXED_STEP_SIZE);
+
+                UpdatePosition(interpolatedPosition);
 
                 watch.Stop();
-                int delay = (int)(Convert.ToInt32(MILISECONDS_PER_STEP / steps) - watch.ElapsedMilliseconds);
-                await Task.Delay(delay > 0 ? delay : 0);
+
+                int delay = MILISECONDS_PER_STEP - (int)watch.ElapsedMilliseconds;
+                if (delay > 0)
+                    Thread.Sleep(delay);
             }
+        }
+
+        public void StopMoving()
+        {
+            isMoving = false; 
         }
     }
 }

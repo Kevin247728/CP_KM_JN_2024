@@ -15,6 +15,7 @@ namespace Data
         public abstract int GetBallRadius();
         public abstract List<Vector2> GetBallsPositions();
         public abstract List<IBall> GetBalls();
+        public abstract void ClearBalls();
         public static DataAbstractAPI CreateAPI()
         {
             return new DataAPI();
@@ -57,6 +58,11 @@ namespace Data
         public override int GetBallsCount()
         {
             return balls.GetBallsCount();
+        }
+
+        public override void ClearBalls()
+        {
+            balls.Clear();
         }
 
         public override IBall GetBall(int index)
