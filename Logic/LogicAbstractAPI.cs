@@ -28,6 +28,7 @@ namespace Logic
     public class LogicAPI : LogicAbstractAPI
     {
         private DataAbstractAPI dataAPI;
+        private object lockObject = new object();
 
         public LogicAPI()
         {
@@ -46,7 +47,10 @@ namespace Logic
 
         public override void ClearBalls()
         {
-            dataAPI.ClearBalls();
+            lock (lockObject)
+            {
+                dataAPI.ClearBalls();
+            }
         }
 
         public override int GetBallRadius()
@@ -96,15 +100,18 @@ namespace Logic
                     // If no overlap, add the position to the list
                     if (!overlap)
                     {
-                        ballPositions.Add(position);
-                        IBall newBall = dataAPI.CreateBall(position, Vector2.Zero);
+                        lock (lockObject)
+                        {
+                            ballPositions.Add(position);
+                            IBall newBall = dataAPI.CreateBall(position, Vector2.Zero);
 
-                        Vector2 maxVelocity = new Vector2(6.0f, 6.0f);
-                        Vector2 velocity = new Vector2(
-                            (float)(rand.NextDouble() * maxVelocity.X - (maxVelocity.X / 2)),
-                            (float)(rand.NextDouble() * maxVelocity.Y - (maxVelocity.Y / 2))
-                        );
-                        newBall.Velocity = velocity;
+                            Vector2 maxVelocity = new Vector2(6.0f, 6.0f);
+                            Vector2 velocity = new Vector2(
+                                (float)(rand.NextDouble() * maxVelocity.X - (maxVelocity.X / 2)),
+                                (float)(rand.NextDouble() * maxVelocity.Y - (maxVelocity.Y / 2))
+                            );
+                            newBall.Velocity = velocity;
+                        }
                     }
                 }
             }
@@ -145,7 +152,7 @@ namespace Logic
                     Vector2 position2 = allBallPositions[j];
 
                     double distance = Vector2.Distance(position1, position2);
-                    double radiusSum = GetBallRadius() * 2; 
+                    double radiusSum = GetBallRadius() * 2;
 
                     if (distance < radiusSum)
                     {
@@ -172,7 +179,7 @@ namespace Logic
             Vector2 normal = Vector2.Normalize(ball2.Position - ball1.Position);
             Vector2 relativeVelocity = ball2.Velocity - ball1.Velocity;
 
-            // Oblicz prędkości po kolizji
+            // Calculate velocities after collision
             float m1 = ball1.Mass;
             float m2 = ball2.Mass;
             float v1n = Vector2.Dot(normal, ball1.Velocity);
@@ -180,7 +187,7 @@ namespace Logic
             float v1nAfter = ((m1 - m2) * v1n + 2 * m2 * v2n) / (m1 + m2);
             float v2nAfter = ((m2 - m1) * v2n + 2 * m1 * v1n) / (m1 + m2);
 
-            // Ustaw nowe prędkości
+            // Set new velocities
             ball1.Velocity += (v1nAfter - v1n) * normal;
             ball2.Velocity += (v2nAfter - v2n) * normal;
         }
@@ -189,7 +196,5 @@ namespace Logic
         {
             ball.Velocity *= -1;
         }
-
-
     }
 }
