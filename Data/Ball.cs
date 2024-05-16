@@ -21,7 +21,8 @@ namespace Data
     {
         private Vector2 position;
         private Vector2 velocity;
-        private static int r = 25;
+        private static int r = 15;
+        Random random = new Random();
         private float mass { get; set; }
 
         private readonly ILogger _logger;
@@ -30,9 +31,6 @@ namespace Data
         private static readonly int MILISECONDS_PER_STEP = 1;
         private const float FIXED_STEP_SIZE = 0.6f;
         private bool isMoving = true;
-        private readonly object lockObject = new object();
-
-        
 
         internal Ball(int id, Vector2 position, Vector2 velocity, ILogger logger)
         {
@@ -87,19 +85,12 @@ namespace Data
 
         public void UpdatePosition(Vector2 newPosition)
         {
-            lock (lockObject)
-            {
-                position = newPosition;
-            }
+            position = newPosition;
         }
 
-        // Metoda do synchronizowanego aktualizowania prędkości kulki
         public void UpdateVelocity(Vector2 newVelocity)
         {
-            lock (lockObject)
-            {
-                velocity = newVelocity;
-            }
+            velocity = newVelocity;
         }
 
         public void StartMoving()

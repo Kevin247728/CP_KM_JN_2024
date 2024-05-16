@@ -17,7 +17,7 @@ namespace ViewModel
         {
             _model = (ModelAPI)ModelAbstractAPI.CreateModelAPI();
 
-            _model.IsAnimatingChanged += Model_IsAnimatingChanged; //rejestracja zdarzenia
+            _model.IsAnimatingChanged += Model_IsAnimatingChanged; 
 
             AddCommand = new RelayCommand(StartSimulation, CanStartSimulation);
             RunCommand = new RelayCommand(StartAnimation, CanStartAnimation);

@@ -5,9 +5,9 @@ using System.Windows.Shapes;
 using System.Windows.Controls;
 using System.Collections.Generic;
 using System.Windows;
-
 using System.Windows.Media.Animation;
 using System.Numerics;
+using System.Threading;
 
 
 namespace Model
@@ -79,15 +79,15 @@ namespace Model
                 SolidColorBrush brush = new SolidColorBrush(Color.FromRgb((byte)random.Next(0, 128), (byte)random.Next(128, 256), (byte)random.Next(128, 256)));
                 Ellipse ellipse = new Ellipse
                 {
-                    Width = logicAPI.GetBallRadius(),
-                    Height = logicAPI.GetBallRadius(),
+                    Width = logicAPI.GetBallRadius() * 2,
+                    Height = logicAPI.GetBallRadius() *2,
                     Fill = brush
                 };
 
                 Vector2 position = logicAPI.GetBallPosition(i);
 
-                double x = position.X;
-                double y = position.Y;
+                double x = position.X + logicAPI.GetBallRadius();
+                double y = position.Y - logicAPI.GetBallRadius();
 
                 Canvas.SetLeft(ellipse, x);
                 Canvas.SetTop(ellipse, y);
@@ -112,10 +112,11 @@ namespace Model
                     if (Canvas.Children.Count != 0)
                     {
                         Vector2 ballPosition = logicAPI.GetBallPosition(ellipseIndex);
-                        Canvas.SetLeft(ellipse, ballPosition.X);
-                        Canvas.SetTop(ellipse, ballPosition.Y);
+                        Canvas.SetLeft(ellipse, ballPosition.X + logicAPI.GetBallRadius());
+                        Canvas.SetTop(ellipse, ballPosition.Y - logicAPI.GetBallRadius());
 
                         logicAPI.DetectAndHandleCollisions();
+                        Thread.Sleep(5);
                     }
 
                     else
