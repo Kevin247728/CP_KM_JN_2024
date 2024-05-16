@@ -1,4 +1,7 @@
 ﻿using Serilog;
+using Serilog.Core;
+using Serilog.Events;
+using Serilog.Sinks.File;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,16 +18,22 @@ namespace Data
 
     public class FileLogger : ILogger
     {
-        private readonly Serilog.Core.Logger _logger;
+        private readonly Logger _logger;
 
-        public FileLogger() //dopracowac miejsce zapisywania pliku z logami bo aktualnie jest to View/bin/Debug
+        public FileLogger()
         {
             string baseDirectory = Directory.GetCurrentDirectory();
             string logFilePath = Path.Combine(baseDirectory, "log.txt");
 
             _logger = new LoggerConfiguration()
-                .WriteTo.File(logFilePath)
+                .WriteTo.File(
+                    logFilePath,
+                    buffered: true,
+                    flushToDiskInterval: TimeSpan.FromSeconds(5)) 
                 .CreateLogger();
+
+            AppDomain.CurrentDomain.ProcessExit += (sender, e) => _logger.Dispose();
+            AppDomain.CurrentDomain.DomainUnload += (sender, e) => _logger.Dispose();
         }
 
         public void Log(string message)
@@ -33,4 +42,3 @@ namespace Data
         }
     }
 }
-
