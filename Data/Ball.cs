@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Numerics;
 using System.Threading;
 using System.Threading.Tasks;
+using Serilog;
 
 namespace Data
 {
@@ -21,18 +22,28 @@ namespace Data
         private Vector2 position;
         private Vector2 velocity;
         private static int r = 25;
-
         private float mass { get; set; }
+
+        private readonly ILogger _logger;
+
         private static readonly int MILISECONDS_PER_STEP = 1;
         private const float FIXED_STEP_SIZE = 0.6f;
         private bool isMoving = true;
         private readonly object lockObject = new object();
 
-        internal Ball(Vector2 position, Vector2 velocity)
+        
+
+        internal Ball(Vector2 position, Vector2 velocity, ILogger logger)
         {
             this.velocity = velocity;
             this.position = position;
             this.mass = 100.0F;
+            this._logger = logger;
+        }
+
+        private void Log(string message)
+        {
+            _logger?.Log(message);
         }
 
         public static int GetBallRadius()
@@ -100,6 +111,8 @@ namespace Data
 
                 UpdatePosition(interpolatedPosition);
 
+                Log($"Ball moved to position: {interpolatedPosition.X}, {interpolatedPosition.Y}");
+
                 watch.Stop();
 
                 int delay = MILISECONDS_PER_STEP - (int)watch.ElapsedMilliseconds;
@@ -110,7 +123,8 @@ namespace Data
 
         public void StopMoving()
         {
-            isMoving = false; 
+            isMoving = false;
+            Log("Ball stopped moving.");
         }
     }
 }

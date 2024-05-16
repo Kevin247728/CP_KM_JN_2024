@@ -1,16 +1,20 @@
 ﻿using System.Collections.Generic;
 using System.Numerics;
 using System.Runtime.CompilerServices;
+using Serilog;
+
 
 namespace Data
 {
     internal class BallsCollection
     {
         private List<IBall> balls;
+        private readonly ILogger _logger;
 
-        public BallsCollection()
+        public BallsCollection(ILogger logger)
         {
             balls = new List<IBall>();
+            _logger = logger;
         }
 
         public List<Vector2> GetBallsPositions()
@@ -25,7 +29,7 @@ namespace Data
 
         public IBall CreateBall(Vector2 position, Vector2 velocity)
         {
-            Ball ball = new Ball(position, velocity);
+            Ball ball = new Ball(position, velocity, _logger);
             balls.Add(ball);
             return ball;
         }

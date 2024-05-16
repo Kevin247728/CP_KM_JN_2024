@@ -79,7 +79,7 @@ namespace Logic
                 bool overlap = true;
                 Vector2 position;
 
-                // Repeat until a non-overlapping position is found
+                //repeat until a non-overlapping position is found
                 while (overlap)
                 {
                     overlap = false;
@@ -87,7 +87,7 @@ namespace Logic
                         rand.Next(GetBallRadius(), dataAPI.GetBoardWidth() - GetBallRadius()),
                         rand.Next(GetBallRadius(), dataAPI.GetBoardWidth() - GetBallRadius()));
 
-                    // Check if the new position overlaps with any existing ball
+                    //check if the new position overlaps with any existing ball
                     foreach (var existingPosition in ballPositions)
                     {
                         if (Vector2.Distance(existingPosition, position) < ballRadius)
@@ -97,7 +97,7 @@ namespace Logic
                         }
                     }
 
-                    // If no overlap, add the position to the list
+                    //if no overlap, add the position to the list
                     if (!overlap)
                     {
                         lock (lockObject)
@@ -179,7 +179,7 @@ namespace Logic
             Vector2 normal = Vector2.Normalize(ball2.Position - ball1.Position);
             Vector2 relativeVelocity = ball2.Velocity - ball1.Velocity;
 
-            // Calculate velocities after collision
+            //calculate velocities after collision
             float m1 = ball1.Mass;
             float m2 = ball2.Mass;
             float v1n = Vector2.Dot(normal, ball1.Velocity);
@@ -187,7 +187,7 @@ namespace Logic
             float v1nAfter = ((m1 - m2) * v1n + 2 * m2 * v2n) / (m1 + m2);
             float v2nAfter = ((m2 - m1) * v2n + 2 * m1 * v1n) / (m1 + m2);
 
-            // Set new velocities
+            //set new velocities
             ball1.Velocity += (v1nAfter - v1n) * normal;
             ball2.Velocity += (v2nAfter - v2n) * normal;
         }
