@@ -10,6 +10,7 @@ namespace Data
     {
         private List<IBall> balls;
         private readonly ILogger _logger;
+        private int nextBallId = 1;
 
         public BallsCollection(ILogger logger)
         {
@@ -29,7 +30,7 @@ namespace Data
 
         public IBall CreateBall(Vector2 position, Vector2 velocity)
         {
-            Ball ball = new Ball(position, velocity, _logger);
+            Ball ball = new Ball(nextBallId++, position, velocity, _logger);
             balls.Add(ball);
             return ball;
         }

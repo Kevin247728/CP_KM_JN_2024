@@ -25,6 +25,7 @@ namespace Data
         private float mass { get; set; }
 
         private readonly ILogger _logger;
+        private readonly int id;
 
         private static readonly int MILISECONDS_PER_STEP = 1;
         private const float FIXED_STEP_SIZE = 0.6f;
@@ -33,8 +34,9 @@ namespace Data
 
         
 
-        internal Ball(Vector2 position, Vector2 velocity, ILogger logger)
+        internal Ball(int id, Vector2 position, Vector2 velocity, ILogger logger)
         {
+            this.id = id;
             this.velocity = velocity;
             this.position = position;
             this.mass = 100.0F;
@@ -43,7 +45,7 @@ namespace Data
 
         private void Log(string message)
         {
-            _logger?.Log(message);
+            _logger?.Log($"Ball {id}: {message}");
         }
 
         public static int GetBallRadius()
