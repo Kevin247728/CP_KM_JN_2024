@@ -67,7 +67,7 @@ namespace Data
         {
             get
             {
-                return Board.BallMass; // Zwracanie stałej wartości masy z klasy Board
+                return Board.BallMass; // const ball mass from Board class
             }
         }
 
