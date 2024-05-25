@@ -40,6 +40,11 @@ namespace Data
             balls.Clear();
         }
 
+        public int GetBallIndex(IBall ball)
+        {
+            return balls.IndexOf(ball);
+        }
+
         public IBall GetBall(int ballId)
         {
             return balls[ballId];

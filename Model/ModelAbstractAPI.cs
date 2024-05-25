@@ -12,8 +12,11 @@ using System.Threading;
 
 namespace Model
 {
-    public abstract class ModelAbstractAPI
+    public abstract class ModelAbstractAPI : IObserver<int>
     {
+        public abstract void OnCompleted();
+        public abstract void OnError(Exception error);
+        public abstract void OnNext(int value);
         public abstract void CreateEllipses(int nrOfBalls);
         public abstract Canvas Canvas { get; set; }
         public abstract List<Ellipse> ellipseCollection { get; }
@@ -35,6 +38,7 @@ namespace Model
         private List<(Ellipse, EventHandler)> ballHandlers;
         public event EventHandler IsAnimatingChanged;
         private Dictionary<int, Ellipse> ellipseDictionary = new Dictionary<int, Ellipse>();
+        private readonly IDisposable unsubscriber;
 
 
         private bool _isAnimating;
@@ -67,6 +71,32 @@ namespace Model
             random = new Random();
 
             ballHandlers = new List<(Ellipse, EventHandler)>();
+            unsubscriber = logicAPI.Subscribe(this);
+        }
+
+        private class Unsubscriber : IDisposable
+        {
+            private IObserver<int> _observer;
+
+            public Unsubscriber(IObserver<int> observer)
+            {
+                _observer = observer;
+            }
+
+            public void Dispose()
+            {
+                _observer = null;
+            }
+        }
+
+        public override void OnCompleted()
+        {
+            unsubscriber.Dispose();
+        }
+
+        public override void OnError(Exception error)
+        {
+            throw new NotImplementedException();
         }
 
 
@@ -98,32 +128,28 @@ namespace Model
 
                 Canvas.Children.Add(ellipse);
 
-                EventHandler renderingHandler = CreateRenderingHandler(ellipse, ellipseIndex);
-                ballHandlers.Add((ellipse, renderingHandler));
+                //EventHandler renderingHandler = CreateRenderingHandler(ellipse, ellipseIndex);
+                //ballHandlers.Add((ellipse, renderingHandler));
             }
 
             ballsCreated += numberOfBalls;
         }
 
-        private EventHandler CreateRenderingHandler(Ellipse ellipse, int ellipseIndex)
+        public override void OnNext(int value)
         {
-                return (sender, e) =>
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+
+                // Aktualizacja pozycji kul na kanwie na podstawie wartości otrzymanej z logiki
+                for (int i = 0; i < ellipseCollection.Count; i++)
                 {
-                    if (Canvas.Children.Count != 0)
-                    {
-                        Vector2 ballPosition = logicAPI.GetBallPosition(ellipseIndex);
-                        Canvas.SetLeft(ellipse, ballPosition.X + logicAPI.GetBallRadius());
-                        Canvas.SetTop(ellipse, ballPosition.Y - logicAPI.GetBallRadius());
+                    Vector2 ballPosition = logicAPI.GetBallPosition(i);
+                    Ellipse ellipse = ellipseCollection[i];
 
-                        logicAPI.DetectAndHandleCollisions();
-                        Thread.Sleep(5);
-                    }
-
-                    else
-                    {
-                        Environment.Exit(0);
-                    }
-                };
+                    Canvas.SetLeft(ellipse, ballPosition.X + logicAPI.GetBallRadius());
+                    Canvas.SetTop(ellipse, ballPosition.Y - logicAPI.GetBallRadius());
+                }
+            });
         }
 
 
@@ -151,6 +177,7 @@ namespace Model
                 ellipseDictionary.Clear();
                 IsAnimating = false;
                 Canvas.Children.Clear();
+                Environment.Exit(0);
             }
         }
     }

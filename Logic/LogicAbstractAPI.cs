@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Numerics;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -25,7 +26,7 @@ namespace Logic
             Ball2 = ball2;
         }
     }
-    public abstract class LogicAbstractAPI
+    public abstract class LogicAbstractAPI : IObserver<IBall>, IObservable<int>
     {
         public abstract void Start();
         public abstract void Stop();
@@ -37,6 +38,10 @@ namespace Logic
         public abstract IBall GetBall(int index);
         public abstract Task DetectAndHandleCollisions();
         public abstract void ClearBalls();
+        public abstract void OnCompleted();
+        public abstract void OnError(Exception error);
+        public abstract void OnNext(IBall ball);
+        public abstract IDisposable Subscribe(IObserver<int> observer);
         public static LogicAbstractAPI CreateLogicAPI()
         {
             return new LogicAPI();
@@ -48,6 +53,22 @@ namespace Logic
         private DataAbstractAPI dataAPI;
         public event EventHandler<CollisionEventArgs> CollisionDetected;
         private object lockObject = new object();
+        private IObserver<int> observer = null;
+
+        private class Unsubscriber : IDisposable
+        {
+            private IObserver<int> _observer;
+
+            public Unsubscriber(IObserver<int> observer)
+            {
+                this._observer = observer;
+            }
+
+            public void Dispose()
+            {
+                _observer = null;
+            }
+        }
 
         public LogicAPI()
         {
@@ -129,8 +150,25 @@ namespace Logic
                         (float)(rand.NextDouble() * maxVelocity.Y - (maxVelocity.Y / 2))
                     );
                     newBall.Velocity = velocity;
+                    _ = newBall.Subscribe(this);
                 }
             }
+        }
+
+        public override IDisposable Subscribe(IObserver<int> observer)
+        {
+            this.observer = observer;
+            return new Unsubscriber(this.observer);
+        }
+
+        public override void OnCompleted()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void OnError(Exception error)
+        {
+            throw new NotImplementedException();
         }
 
         public override void Start()
@@ -193,6 +231,16 @@ namespace Logic
             });
         }
 
+        public override void OnNext(IBall ball)
+        {
+            lock(lockObject)
+            {
+                int index = dataAPI.GetBallIndex(ball);
+                observer.OnNext(index);
+
+                _ = DetectAndHandleCollisions();
+            }
+        }
         public void HandleCollision(IBall ball1, IBall ball2)
         {
             Vector2 normal = Vector2.Normalize(ball2.Position - ball1.Position);
