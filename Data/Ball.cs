@@ -124,6 +124,7 @@ namespace Data
         public void StopMoving()
         {
             isMoving = false;
+            Log("Ball stopped moving");
         }
 
         public IDisposable Subscribe(IObserver<IBall> observer)

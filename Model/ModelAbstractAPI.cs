@@ -171,14 +171,14 @@ namespace Model
             if (IsAnimating)
             {
                 logicAPI.Stop();
-                ballHandlers = null;
-                ellipseCollection.Clear();
-                logicAPI.ClearBalls();
-                ellipseDictionary.Clear();
                 IsAnimating = false;
-                Canvas.Children.Clear();
-                Environment.Exit(0);
+
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    Application.Current.Shutdown();
+                });
             }
         }
+
     }
 }

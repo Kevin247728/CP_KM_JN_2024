@@ -194,6 +194,7 @@ namespace Logic
             }
         }
 
+
         public override async Task DetectAndHandleCollisions()
         {
             await Task.Run(() =>
