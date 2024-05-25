@@ -24,7 +24,6 @@ namespace Data
         private Vector2 position;
         private Vector2 velocity;
         private static int r = 15;
-        private float mass { get; set; }
         internal readonly List<IObserver<IBall>> observers;
 
         private readonly ILogger _logger;
@@ -40,7 +39,6 @@ namespace Data
             this.id = id;
             this.velocity = velocity;
             this.position = position;
-            this.mass = 100.0F;
             this._logger = logger;
         }
 
@@ -69,7 +67,7 @@ namespace Data
         {
             get
             {
-                return mass;
+                return Board.BallMass; // Zwracanie stałej wartości masy z klasy Board
             }
         }
 
