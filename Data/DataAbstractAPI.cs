@@ -19,6 +19,7 @@ namespace Data
         public abstract List<IBall> GetBalls();
         public abstract void ClearBalls();
         public abstract int GetBallIndex(IBall ball);
+        public abstract float GetBallMass();
 
         public static DataAbstractAPI CreateAPI()
         {
@@ -35,6 +36,11 @@ namespace Data
         public override int GetBoardWidth()
         {
             return Board.width;
+        }
+
+        public override float GetBallMass()
+        {
+            return Board.BallMass;
         }
 
         public override List<Vector2> GetBallsPositions()

@@ -150,7 +150,7 @@ namespace Logic
                         (float)(rand.NextDouble() * maxVelocity.Y - (maxVelocity.Y / 2))
                     );
                     newBall.Velocity = velocity;
-                    _ = newBall.Subscribe(this);
+                    _ = newBall.Subscribe(this); // subskrybujemy na powiadomienia o zmianach stanu dla newBall
                 }
             }
         }
@@ -242,14 +242,15 @@ namespace Logic
                 _ = DetectAndHandleCollisions();
             }
         }
+
         public void HandleCollision(IBall ball1, IBall ball2)
         {
             Vector2 normal = Vector2.Normalize(ball2.Position - ball1.Position);
             Vector2 relativeVelocity = ball2.Velocity - ball1.Velocity;
 
             // Calculate velocities after collision
-            float m1 = ball1.Mass;
-            float m2 = ball2.Mass;
+            float m1 = dataAPI.GetBallMass();
+            float m2 = dataAPI.GetBallMass();
             float v1n = Vector2.Dot(normal, ball1.Velocity);
             float v2n = Vector2.Dot(normal, ball2.Velocity);
             float v1nAfter = ((m1 - m2) * v1n + 2 * m2 * v2n) / (m1 + m2);

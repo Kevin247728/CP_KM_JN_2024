@@ -10,10 +10,8 @@ namespace Data
     {
         Vector2 Position { get; }
         Vector2 Velocity { get; set; }
-        float Mass { get; }
         void StartMoving();
         void StopMoving();
-        new IDisposable Subscribe(IObserver<IBall> observer);
     }
 
 
@@ -60,14 +58,6 @@ namespace Data
                 {
                     return position;
                 }
-            }
-        }
-
-        public float Mass
-        {
-            get
-            {
-                return Board.BallMass; // const ball mass from Board class
             }
         }
 

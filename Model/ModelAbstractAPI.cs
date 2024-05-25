@@ -5,9 +5,7 @@ using System.Windows.Shapes;
 using System.Windows.Controls;
 using System.Collections.Generic;
 using System.Windows;
-using System.Windows.Media.Animation;
 using System.Numerics;
-using System.Threading;
 
 
 namespace Model
@@ -35,9 +33,7 @@ namespace Model
         public override Canvas Canvas { get; set; }
         private readonly Random random;
         private int ballsCreated = 0;
-        private List<(Ellipse, EventHandler)> ballHandlers;
         public event EventHandler IsAnimatingChanged;
-        private Dictionary<int, Ellipse> ellipseDictionary = new Dictionary<int, Ellipse>();
         private readonly IDisposable unsubscriber;
 
 
@@ -70,23 +66,7 @@ namespace Model
             };
             random = new Random();
 
-            ballHandlers = new List<(Ellipse, EventHandler)>();
             unsubscriber = logicAPI.Subscribe(this);
-        }
-
-        private class Unsubscriber : IDisposable
-        {
-            private IObserver<int> _observer;
-
-            public Unsubscriber(IObserver<int> observer)
-            {
-                _observer = observer;
-            }
-
-            public void Dispose()
-            {
-                _observer = null;
-            }
         }
 
         public override void OnCompleted()
@@ -123,13 +103,7 @@ namespace Model
                 Canvas.SetTop(ellipse, y);
 
                 ellipseCollection.Add(ellipse);
-                int ellipseIndex = ellipseCollection.Count - 1;
-                ellipseDictionary.Add(ellipseIndex, ellipse);
-
                 Canvas.Children.Add(ellipse);
-
-                //EventHandler renderingHandler = CreateRenderingHandler(ellipse, ellipseIndex);
-                //ballHandlers.Add((ellipse, renderingHandler));
             }
 
             ballsCreated += numberOfBalls;
@@ -159,10 +133,6 @@ namespace Model
             {
                 logicAPI.Start();
                 IsAnimating = true;
-                foreach (var handler in ballHandlers)
-                {
-                    CompositionTarget.Rendering += handler.Item2;
-                }
             }
         }
 
@@ -176,6 +146,7 @@ namespace Model
                 Application.Current.Dispatcher.Invoke(() =>
                 {
                     Application.Current.Shutdown();
+                    Environment.Exit(0);
                 });
             }
         }
