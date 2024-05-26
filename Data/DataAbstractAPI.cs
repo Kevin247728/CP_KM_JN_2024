@@ -21,6 +21,8 @@ namespace Data
         public abstract int GetBallIndex(IBall ball);
         public abstract float GetBallMass();
 
+        public abstract ILogger Logger { get; }
+
         public static DataAbstractAPI CreateAPI()
         {
             ILogger logger = new FileLogger();
@@ -32,6 +34,14 @@ namespace Data
     {
         private readonly BallsCollection balls;
         private readonly ILogger _logger;
+
+        public override ILogger Logger => _logger;
+
+        public DataAPI(ILogger logger)
+        {
+            balls = new BallsCollection(logger);
+            _logger = logger;
+        }
 
         public override int GetBoardWidth()
         {
@@ -56,12 +66,6 @@ namespace Data
         public override int GetBoardHeight()
         {
             return Board.height;
-        }
-
-        public DataAPI(ILogger logger)
-        {
-            balls = new BallsCollection(logger);
-            _logger = logger;
         }
 
         public override IBall CreateBall(Vector2 position, Vector2 velocity)

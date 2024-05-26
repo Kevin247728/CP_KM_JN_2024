@@ -245,6 +245,8 @@ namespace Logic
 
         public void HandleCollision(IBall ball1, IBall ball2)
         {
+            dataAPI.Logger.Log($"Collision detected between Ball {dataAPI.GetBallIndex(ball1)} and Ball {dataAPI.GetBallIndex(ball2)}");
+
             Vector2 normal = Vector2.Normalize(ball2.Position - ball1.Position);
             Vector2 relativeVelocity = ball2.Velocity - ball1.Velocity;
 
@@ -263,6 +265,8 @@ namespace Logic
 
         private void HandleWallCollision(IBall ball)
         {
+            dataAPI.Logger.Log($"Wall collision detected for Ball {dataAPI.GetBallIndex(ball)}");
+
             Vector2 velocity = ball.Velocity;
 
             int boardWidth = GetBoardWidth();

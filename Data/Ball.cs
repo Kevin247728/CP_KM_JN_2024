@@ -25,7 +25,8 @@ namespace Data
         internal readonly List<IObserver<IBall>> observers;
 
         private readonly ILogger _logger;
-        private readonly int id;
+        //private readonly int id;
+        public int Id { get; }
 
         private static readonly int MILISECONDS_PER_STEP = 1;
         private const float FIXED_STEP_SIZE = 0.6f;
@@ -34,7 +35,7 @@ namespace Data
         internal Ball(int id, Vector2 position, Vector2 velocity, ILogger logger)
         {
             observers = new List<IObserver<IBall>>();
-            this.id = id;
+            this.Id = id;
             this.velocity = velocity;
             this.position = position;
             this._logger = logger;
@@ -42,7 +43,7 @@ namespace Data
 
         private void Log(string message)
         {
-            _logger?.Log($"Ball {id}: {message}");
+            _logger?.Log($"Ball {Id}: {message}");
         }
 
         public static int GetBallRadius()
