@@ -32,7 +32,7 @@ namespace Data
         {
             Ball ball = new Ball(nextBallId++, position, velocity, _logger);
             balls.Add(ball);
-            _logger.Log($"Created Ball with ID: {ball.Id}");
+            _logger.Log($"Created Ball with ID: {ball.Id}. Total balls: {balls.Count}");
             return ball;
         }
 

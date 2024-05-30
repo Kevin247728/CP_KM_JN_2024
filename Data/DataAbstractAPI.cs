@@ -25,7 +25,7 @@ namespace Data
 
         public static DataAbstractAPI CreateAPI()
         {
-            ILogger logger = new FileLogger();
+            ILogger logger = new CustomLogger();
             return new DataAPI(logger);
         }
     }

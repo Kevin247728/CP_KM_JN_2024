@@ -192,6 +192,8 @@ namespace Logic
                 IBall ball = dataAPI.GetBall(i);
                 ball.StopMoving();
             }
+
+            dataAPI.Logger.FlushLogs(null);
         }
 
 
