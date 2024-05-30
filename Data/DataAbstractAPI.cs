@@ -23,9 +23,11 @@ namespace Data
 
         public abstract ILogger Logger { get; }
 
+        public abstract void EnableLogging(ILogger logger);
+
         public static DataAbstractAPI CreateAPI()
         {
-            ILogger logger = new CustomLogger();
+            ILogger logger = new FileLogger();
             return new DataAPI(logger);
         }
     }
@@ -33,6 +35,7 @@ namespace Data
     internal class DataAPI : DataAbstractAPI
     {
         private readonly BallsCollection balls;
+        private List<BallLogger> _loggers = new List<BallLogger>();
         private readonly ILogger _logger;
 
         public override ILogger Logger => _logger;
@@ -80,6 +83,8 @@ namespace Data
 
         public override void ClearBalls()
         {
+            _loggers.ForEach(b => b.Dispose());
+            _loggers.Clear();
             balls.Clear();
         }
 
@@ -96,6 +101,14 @@ namespace Data
         public override int GetBallRadius()
         {
             return Ball.GetBallRadius();
+        }
+
+        public override void EnableLogging(ILogger logger)
+        {
+            foreach (Ball b in balls.GetBalls())
+            {
+                _loggers.Add(new BallLogger(b, logger));
+            }
         }
     }
 }

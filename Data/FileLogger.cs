@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
+using System.Linq;
+using System.Text;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -8,118 +12,46 @@ namespace Data
 {
     public interface ILogger
     {
-        void Log(string message, int priority = 1);
-        void FlushLogs(object state);
+        Task Log(BallJsonModel ball);
+        Task LogMessage(string message);
     }
 
-    public class LogEntry : IComparable<LogEntry>
+    public class FileLogger : ILogger
     {
-        public DateTime Timestamp { get; }
-        public string Message { get; }
-        public int Priority { get; }
-
-        public LogEntry(string message, int priority)
+        private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1);
+        public async Task Log(BallJsonModel ball)
         {
-            Timestamp = DateTime.Now;
-            Message = message;
-            Priority = priority;
-        }
-
-        public int CompareTo(LogEntry other)
-        {
-            //higher priority come first
-            int priorityComparison = other.Priority.CompareTo(Priority);
-            return priorityComparison != 0 ? priorityComparison : Timestamp.CompareTo(other.Timestamp);
-        }
-
-        public override string ToString()
-        {
-            return $"{Timestamp:yyyy-MM-dd HH:mm:ss.fff} [{Priority}] {Message}";
-        }
-    }
-
-    public class CustomLogger : ILogger, IDisposable
-    {
-        private readonly string _logFilePath;
-        private readonly PriorityQueue<LogEntry> _logQueue;
-        private readonly object _lockObject;
-        private readonly Timer _flushTimer;
-
-        public CustomLogger()
-        {
-            string baseDirectory = Directory.GetCurrentDirectory();
-            _logFilePath = Path.Combine(baseDirectory, "log.txt");
-            _logQueue = new PriorityQueue<LogEntry>();
-            _lockObject = new object();
-
-            // Flush log to file every 2 seconds
-            _flushTimer = new Timer(FlushLogs, null, TimeSpan.FromSeconds(2), TimeSpan.FromSeconds(2));
-
-            AppDomain.CurrentDomain.ProcessExit += (sender, e) => Dispose();
-            AppDomain.CurrentDomain.DomainUnload += (sender, e) => Dispose();
-        }
-
-        public void Log(string message, int priority = 1)
-        {
-            var logEntry = new LogEntry(message, priority);
-
-            lock (_lockObject)
+            await _semaphore.WaitAsync();
+            try
             {
-                _logQueue.Enqueue(logEntry);
-            }
-        }
-
-        public void FlushLogs(object state)
-        {
-            List<LogEntry> entriesToWrite = new List<LogEntry>();
-
-            lock (_lockObject)
-            {
-                while (_logQueue.Count > 0)
+                using (StreamWriter sw = File.AppendText(Directory.GetCurrentDirectory() + $"\\log.json"))
                 {
-                    entriesToWrite.Add(_logQueue.Dequeue());
+                    await sw.WriteLineAsync(JsonSerializer.Serialize(ball));
                 }
             }
-
-            if (entriesToWrite.Count > 0)
+            finally
             {
-                using (StreamWriter writer = new StreamWriter(_logFilePath, true))
-                {
-                    foreach (var entry in entriesToWrite)
-                    {
-                        writer.WriteLine(entry.ToString());
-                    }
-                }
+                _semaphore.Release();
             }
         }
 
-        public void Dispose()
+        public async Task LogMessage(string message)
         {
-            _flushTimer.Dispose();
-            FlushLogs(null);
-        }
-    }
-
-    //implementation of a PriorityQueue using a SortedSet.
-    public class PriorityQueue<T> where T : IComparable<T>
-    {
-        private readonly SortedSet<T> _set = new SortedSet<T>();
-
-        public int Count => _set.Count;
-
-        public void Enqueue(T item)
-        {
-            _set.Add(item);
-        }
-
-        public T Dequeue()
-        {
-            if (_set.Count == 0)
-                throw new InvalidOperationException("The queue is empty.");
-
-            T item = _set.Min;
-            _set.Remove(item);
-            return item;
+            await _semaphore.WaitAsync();
+            try
+            {
+                DateTime utcNow = DateTime.Now;
+                string formattedTime = utcNow.ToString("yyyy-MM-dd HH:mm:ss.fffZ");
+                string logMessage = $"{formattedTime:s} {message}";
+                using (StreamWriter sw = File.AppendText(Directory.GetCurrentDirectory() + $"\\log.json"))
+                {
+                    await sw.WriteLineAsync(logMessage);
+                }
+            }
+            finally
+            {
+                _semaphore.Release();
+            }
         }
     }
 }

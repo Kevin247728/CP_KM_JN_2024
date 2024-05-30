@@ -192,10 +192,7 @@ namespace Logic
                 IBall ball = dataAPI.GetBall(i);
                 ball.StopMoving();
             }
-
-            dataAPI.Logger.FlushLogs(null);
         }
-
 
         public override async Task DetectAndHandleCollisions()
         {
@@ -247,12 +244,10 @@ namespace Logic
 
         public void HandleCollision(IBall ball1, IBall ball2)
         {
-            dataAPI.Logger.Log($"Collision detected between Ball {dataAPI.GetBallIndex(ball1)} and Ball {dataAPI.GetBallIndex(ball2)}");
+            dataAPI.Logger.LogMessage($"Collision detected between Ball {dataAPI.GetBallIndex(ball1)} and Ball {dataAPI.GetBallIndex(ball2)}");
 
             Vector2 normal = Vector2.Normalize(ball2.Position - ball1.Position);
             Vector2 relativeVelocity = ball2.Velocity - ball1.Velocity;
-
-            dataAPI.Logger.Log($"Before collision - Ball {dataAPI.GetBallIndex(ball1)} Velocity: {ball1.Velocity}, Ball {dataAPI.GetBallIndex(ball2)} Velocity: {ball2.Velocity}");
 
             // Calculate velocities after collision
             float m1 = dataAPI.GetBallMass();
@@ -266,16 +261,14 @@ namespace Logic
             ball1.Velocity += (v1nAfter - v1n) * normal;
             ball2.Velocity += (v2nAfter - v2n) * normal;
 
-            dataAPI.Logger.Log($"After collision - Ball {dataAPI.GetBallIndex(ball1)} Velocity: {ball1.Velocity}, Ball {dataAPI.GetBallIndex(ball2)} Velocity: {ball2.Velocity}");
+            dataAPI.Logger.LogMessage($"After collision - Ball {dataAPI.GetBallIndex(ball1)} Velocity: {ball1.Velocity}, Ball {dataAPI.GetBallIndex(ball2)} Velocity: {ball2.Velocity}");
         }
 
         private void HandleWallCollision(IBall ball)
         {
-            dataAPI.Logger.Log($"Wall collision detected for Ball {dataAPI.GetBallIndex(ball)}");
+            dataAPI.Logger.LogMessage($"Wall collision detected for Ball {dataAPI.GetBallIndex(ball)}");
 
             Vector2 velocity = ball.Velocity;
-
-            dataAPI.Logger.Log($"Before wall collision - Ball {dataAPI.GetBallIndex(ball)} Velocity: {velocity}");
 
             int boardWidth = GetBoardWidth();
             int boardHeight = GetBoardHeight();
@@ -294,7 +287,7 @@ namespace Logic
 
             ball.Velocity = velocity;
 
-            dataAPI.Logger.Log($"After wall collision - Ball {dataAPI.GetBallIndex(ball)} Velocity: {ball.Velocity}");
+            dataAPI.Logger.LogMessage($"After wall collision - Ball {dataAPI.GetBallIndex(ball)} Velocity: {ball.Velocity}");
         }
     }
 }
