@@ -79,12 +79,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Ball.cs" />
-    <Compile Include="BallJsonModel.cs" />
-    <Compile Include="BallLogger.cs" />
     <Compile Include="BallsCollection.cs" />
     <Compile Include="Board.cs" />
     <Compile Include="DataAbstractAPI.cs" />
-    <Compile Include="FileLogger.cs" />
+    <Compile Include="Logger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

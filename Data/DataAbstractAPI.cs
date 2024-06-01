@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Numerics;
-using System.Threading.Tasks;
-using Serilog;
 
 
 namespace Data
@@ -21,29 +18,19 @@ namespace Data
         public abstract int GetBallIndex(IBall ball);
         public abstract float GetBallMass();
 
-        public abstract ILogger Logger { get; }
-
-        public abstract void EnableLogging(ILogger logger);
-
         public static DataAbstractAPI CreateAPI()
         {
-            ILogger logger = new FileLogger();
-            return new DataAPI(logger);
+            return new DataAPI();
         }
     }
 
     internal class DataAPI : DataAbstractAPI
     {
         private readonly BallsCollection balls;
-        private List<BallLogger> _loggers = new List<BallLogger>();
-        private readonly ILogger _logger;
 
-        public override ILogger Logger => _logger;
-
-        public DataAPI(ILogger logger)
+        public DataAPI()
         {
-            balls = new BallsCollection(logger);
-            _logger = logger;
+            balls = new BallsCollection();
         }
 
         public override int GetBoardWidth()
@@ -83,8 +70,6 @@ namespace Data
 
         public override void ClearBalls()
         {
-            _loggers.ForEach(b => b.Dispose());
-            _loggers.Clear();
             balls.Clear();
         }
 
@@ -101,14 +86,6 @@ namespace Data
         public override int GetBallRadius()
         {
             return Ball.GetBallRadius();
-        }
-
-        public override void EnableLogging(ILogger logger)
-        {
-            foreach (Ball b in balls.GetBalls())
-            {
-                _loggers.Add(new BallLogger(b, logger));
-            }
         }
     }
 }

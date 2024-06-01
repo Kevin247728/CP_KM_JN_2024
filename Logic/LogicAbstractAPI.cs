@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Numerics;
-using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -244,7 +243,6 @@ namespace Logic
 
         public void HandleCollision(IBall ball1, IBall ball2)
         {
-            dataAPI.Logger.LogMessage($"Collision detected between Ball {dataAPI.GetBallIndex(ball1)} and Ball {dataAPI.GetBallIndex(ball2)}");
 
             Vector2 normal = Vector2.Normalize(ball2.Position - ball1.Position);
             Vector2 relativeVelocity = ball2.Velocity - ball1.Velocity;
@@ -261,12 +259,10 @@ namespace Logic
             ball1.Velocity += (v1nAfter - v1n) * normal;
             ball2.Velocity += (v2nAfter - v2n) * normal;
 
-            dataAPI.Logger.LogMessage($"After collision - Ball {dataAPI.GetBallIndex(ball1)} Velocity: {ball1.Velocity}, Ball {dataAPI.GetBallIndex(ball2)} Velocity: {ball2.Velocity}");
         }
 
         private void HandleWallCollision(IBall ball)
         {
-            dataAPI.Logger.LogMessage($"Wall collision detected for Ball {dataAPI.GetBallIndex(ball)}");
 
             Vector2 velocity = ball.Velocity;
 
@@ -287,7 +283,6 @@ namespace Logic
 
             ball.Velocity = velocity;
 
-            dataAPI.Logger.LogMessage($"After wall collision - Ball {dataAPI.GetBallIndex(ball)} Velocity: {ball.Velocity}");
         }
     }
 }

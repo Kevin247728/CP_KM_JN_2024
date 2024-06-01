@@ -23,26 +23,18 @@ namespace Data
         private Vector2 velocity;
         private static int r = 15;
         internal readonly List<IObserver<IBall>> observers;
-
-        private readonly ILogger _logger;
         public int Id { get; }
 
         private static readonly int MILISECONDS_PER_STEP = 1;
         private const float FIXED_STEP_SIZE = 0.6f;
         private bool isMoving = true;
 
-        internal Ball(int id, Vector2 position, Vector2 velocity, ILogger logger)
+        internal Ball(int id, Vector2 position, Vector2 velocity)
         {
             observers = new List<IObserver<IBall>>();
             this.Id = id;
             this.velocity = velocity;
             this.position = position;
-            this._logger = logger;
-        }
-
-        private void Log()
-        {
-            _logger?.Log(new BallJsonModel(Id, position, velocity, DateTime.Now));
         }
 
         public static int GetBallRadius()
@@ -94,9 +86,7 @@ namespace Data
                     position = interpolatedPosition;
                 }
 
-                Log();
-
-                //Log($"Ball moved to position: {interpolatedPosition.X}, {interpolatedPosition.Y}");
+                Logger.GetInstance().LogBallPosition(Id, new Vector2(Position.X, Position.Y));
 
                 foreach (IObserver<Ball> observer in observers)
                 {
@@ -114,7 +104,6 @@ namespace Data
         public void StopMoving()
         {
             isMoving = false;
-            _logger.LogMessage($"Ball {Id} stopped moving");
         }
 
         public IDisposable Subscribe(IObserver<IBall> observer)
